@@ -1,6 +1,6 @@
 package com.zetes.projects.bosa.esealing.model;
 
-public class SignResponse {
+public class DsvResponse {
 
     private Cert cert;
     private Key key;
@@ -13,15 +13,15 @@ public class SignResponse {
     private String[] signaturePolicyLocations;
     private String[] signatures;
 
-    public SignResponse() {
+    public DsvResponse() {
     }
 
-    public SignResponse(String error, String error_description) {
+    public DsvResponse(String error, String error_description) {
         this.error = error;
         this.error_description = error_description;
     }
 
-    public SignResponse(Cert cert, Key key, Boolean multisign, String error, String error_description, String policy, String responseID, String signaturePolicyID, String[] signaturePolicyLocations, String[] signatures) {
+    public DsvResponse(Cert cert, Key key, Boolean multisign, String error, String error_description, String policy, String responseID, String signaturePolicyID, String[] signaturePolicyLocations, String[] signatures) {
         this.cert = cert;
         this.key = key;
         this.multisign = multisign;

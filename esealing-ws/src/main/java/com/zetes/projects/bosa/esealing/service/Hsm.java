@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 import javax.xml.bind.DatatypeConverter;
 
+import com.zetes.projects.bosa.esealing.exception.ESealException;
 import com.zetes.projects.bosa.esealing.model.*;
 
 import org.slf4j.Logger;
@@ -23,9 +24,11 @@ import org.slf4j.LoggerFactory;
  */
 public class Hsm {
 
+	private static final Logger LOG = LoggerFactory.getLogger(Hsm.class);
+
 	private static Hsm hsm;
 
-	public static Hsm getHsm() {
+	public static Hsm getHsm() throws ESealException {
 		if (null == hsm)
 			hsm = new Hsm();
 		return hsm;
@@ -33,12 +36,13 @@ public class Hsm {
 
 	////////////////////////////////////////////////////////
 
-	private Hsm() {
+	private Hsm() throws ESealException {
 	}
 
-	public ListResponse getCredentialsList(String userName, char[] userPwd, String certificates) {
+	public ListResponse getCredentialsList(String userName, char[] userPwd, String certificates) throws ESealException {
+		KeyStore ks = getKeyStore(userName, userPwd);
+
 		try {
-			KeyStore ks = getKeyStore(userName, userPwd);
 
 			Vector<String> credentialIds = new Vector<String>(10);
 			Vector<String> certs =         new Vector<String>(10);
@@ -64,8 +68,8 @@ public class Hsm {
 			return new ListResponse("OK", null, credIdArr, certArr);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			return null; // TODO
+			LOG.error("Hsm.getCredentialsList(): " + e.toString(), e);
+			throw new ESealException(500, "Internal error", e.getMessage());
 		}
 	}
 
@@ -88,18 +92,26 @@ public class Hsm {
 		return ret.toString();
 	}
 
-	private KeyStore getKeyStore(String userName, char[] userPwd) throws Exception {
+	private KeyStore getKeyStore(String userName, char[] userPwd) throws ESealException {
 		String p12Str = null;
 		if ("bosa".equals(userName))
 			p12Str = BOSA_P12;
-		else
-			; // TODO
+		else {
+			LOG.info("No keystore/slot available for user '" + userName + "'");
+			throw new ESealException(401, "Bad Authorization", "Bad username/password");
+		}
 
-		KeyStore ks = KeyStore.getInstance("PKCS12");
-		byte[] p12Bytes = DatatypeConverter.parseBase64Binary(p12Str);
-		ks.load(new ByteArrayInputStream(p12Bytes), userPwd);
-		
-		return ks;
+		try {
+			KeyStore ks = KeyStore.getInstance("PKCS12");
+			byte[] p12Bytes = DatatypeConverter.parseBase64Binary(p12Str);
+			ks.load(new ByteArrayInputStream(p12Bytes), userPwd);
+			
+			return ks;
+		}
+		catch (Exception e) {
+			LOG.info("Bad password specified for user '" + userName + "'");
+			throw new ESealException(401, "Bad Authorization", "Bad username/password");
+		}
 	}
 
 	////////////////////////////////////////////////////////

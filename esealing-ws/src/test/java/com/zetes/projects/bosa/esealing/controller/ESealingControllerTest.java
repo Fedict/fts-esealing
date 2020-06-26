@@ -75,13 +75,13 @@ public class ESealingControllerTest extends ESealingTestBase {
     @Test
     public void testSignHash() throws Exception {
         // given
-        SignRequest signRequest = new SignRequest();
+        DsvRequest dsvRequest = new DsvRequest();
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("abc", "def");
-        HttpEntity<SignRequest> request = new HttpEntity<>(signRequest, headers);
+        HttpEntity<DsvRequest> request = new HttpEntity<>(dsvRequest, headers);
 
         // when
-        SignResponse response = this.restTemplate.postForObject(LOCALHOST + port + SIGNHASH_ENDPOINT, request, SignResponse.class);
+        DsvResponse response = this.restTemplate.postForObject(LOCALHOST + port + SIGNHASH_ENDPOINT, request, DsvResponse.class);
 
         // then
         assertNotNull(response);

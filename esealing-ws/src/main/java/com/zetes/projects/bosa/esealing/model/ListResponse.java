@@ -49,7 +49,7 @@ public class ListResponse {
         return credentialIDs;
     }
 
-    public void setCredentialIDs(String[] CredentialIDs) {
+    public void setCredentialIDs(String[] credentialIDs) {
         this.credentialIDs = credentialIDs;
     }
 

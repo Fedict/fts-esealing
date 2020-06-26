@@ -30,12 +30,12 @@ public class ESealingService {
         return new InfoResponse(cert, key, true, "error", "error_description", "authMode", "SCAL");
     }
 
-    public SignResponse signHash(String authorization, SignRequest signRequest) throws ESealException {
+    public DsvResponse signHash(String authorization, DsvRequest dsvRequest) throws ESealException {
         LOG.info("Signing hash...");
 
         Cert cert = new Cert("status", new String[]{"certificates"}, "validFrom", "validTo", "issuerDN", "serialNumber", "subjectDN");
         Key key = new Key("status", new String[]{"algo"}, 1, 1);
-        return new SignResponse(cert, key, true, "error", "error_description", "policy", "responseID", "signaturePolicyID", new String[]{"signaturePolicyLocations"}, new String[]{"signatures"});
+        return new DsvResponse(cert, key, true, "error", "error_description", "policy", "responseID", "signaturePolicyID", new String[]{"signaturePolicyLocations"}, new String[]{"signatures"});
     }
 
 	private String[] checkAuthorization(String authorization) throws ESealException {

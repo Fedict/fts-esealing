@@ -72,21 +72,21 @@ public class ESealingController {
     }
 
     @PostMapping(value = "/signatures/signHash", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<SignResponse> signHash(HttpEntity<SignRequest> request) {
+    public ResponseEntity<DsvResponse> signHash(HttpEntity<DsvRequest> request) {
         try {
             String authorization = getAuthorizationHeader(request.getHeaders());
-            SignResponse signResponse = ESealingService.signHash(authorization, request.getBody());
+            DsvResponse dsvResponse = ESealingService.signHash(authorization, request.getBody());
 
-            return new ResponseEntity<>(signResponse, HttpStatus.OK);
+            return new ResponseEntity<>(dsvResponse, HttpStatus.OK);
         } catch (ESealException e) {
-            SignResponse signResponse = new SignResponse(e.getError(), e.getErrorDescription());
+            DsvResponse dsvResponse = new DsvResponse(e.getError(), e.getErrorDescription());
             HttpStatus status = HttpStatus.valueOf(e.getHttpStatus());
 
             if (status != UNAUTHORIZED) {
-                return new ResponseEntity<>(signResponse, status);
+                return new ResponseEntity<>(dsvResponse, status);
             } else {
                 HttpHeaders headers = getWwwAuthenticateHeader();
-                return new ResponseEntity<>(signResponse, headers, status);
+                return new ResponseEntity<>(dsvResponse, headers, status);
             }
         }
     }

@@ -1,6 +1,10 @@
 package com.zetes.projects.bosa.esealing.model;
 
-public class SignRequest {
+/**
+ * See https://www.etsi.org/deliver/etsi_ts/119400_119499/119432/01.01.01_60/ts_119432v010101p.pdf 2019-03, par 8.5.1
+ * See https://forge.etsi.org/rep/esi/x19_432_sign_creation_protocol/raw/v1.1.1/19432-openapi.yaml - signing-certificates-list-request
+ */
+public class DsvRequest {
 
     private String operationMode;
     private String requestID;
@@ -21,10 +25,13 @@ public class SignRequest {
     private String[] documents;
     private Digest[] documentDigests;
 
-    public SignRequest() {
+    public DsvRequest() {
     }
 
-    public SignRequest(String operationMode, String requestID, String SAD, OptionalData optionalData, Integer validity_period, String credentialID, String lang, Integer numSignatures, String policy, String signaturePolicyID, String signAlgo, String signAlgoParams, Attribute[] signed_props, String signature_format, String conformance_level, String response_uri, String[] documents, Digest[] documentDigests) {
+    /**
+     * @param operationMode
+     */
+    public DsvRequest(String operationMode, String requestID, String SAD, OptionalData optionalData, Integer validity_period, String credentialID, String lang, Integer numSignatures, String policy, String signaturePolicyID, String signAlgo, String signAlgoParams, Attribute[] signed_props, String signature_format, String conformance_level, String response_uri, String[] documents, Digest[] documentDigests) {
         this.operationMode = operationMode;
         this.requestID = requestID;
         this.SAD = SAD;
