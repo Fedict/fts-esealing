@@ -10,6 +10,11 @@ public class ListResponse {
     public ListResponse() {
     }
 
+    public ListResponse(String error, String error_description) {
+        this.error = error;
+        this.error_description = error_description;
+    }
+
     public ListResponse(String error, String error_description, String policy, String responseID) {
         this.error = error;
         this.error_description = error_description;

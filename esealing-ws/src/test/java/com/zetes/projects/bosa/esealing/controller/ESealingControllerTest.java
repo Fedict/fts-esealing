@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class ESealingControllerTest extends ESealingTestBase {
 
@@ -27,7 +28,7 @@ public class ESealingControllerTest extends ESealingTestBase {
     }
 
     @Test
-    public void testAuthorizationNOK() throws Exception {
+    public void testAuthorizationExample() throws Exception {
         // given
         ListRequest listRequest = new ListRequest();
 
@@ -35,7 +36,10 @@ public class ESealingControllerTest extends ESealingTestBase {
         ResponseEntity<ListResponse> response = this.restTemplate.postForEntity(LOCALHOST + port + CREDLIST_ENDPOINT, listRequest, ListResponse.class);
 
         // then
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(UNAUTHORIZED, response.getStatusCode());
+        assertEquals("Basic realm=\"User Visible Realm\"", response.getHeaders().get(WWW_AUTHENTICATE).get(0));
+        assertEquals("Authorization null", response.getBody().getError());
+        assertEquals("Authorization should not be null", response.getBody().getError_description());
     }
 
     @Test
@@ -43,7 +47,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         ListRequest listRequest = new ListRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Basic YWJjOmRlZg==");
+        headers.setBasicAuth("abc", "def");
         HttpEntity<ListRequest> request = new HttpEntity<>(listRequest, headers);
 
         // when
@@ -58,7 +62,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         InfoRequest infoRequest = new InfoRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Basic YWJjOmRlZg==");
+        headers.setBasicAuth("abc", "def");
         HttpEntity<InfoRequest> request = new HttpEntity<>(infoRequest, headers);
 
         // when
@@ -73,7 +77,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         SignRequest signRequest = new SignRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Basic YWJjOmRlZg==");
+        headers.setBasicAuth("abc", "def");
         HttpEntity<SignRequest> request = new HttpEntity<>(signRequest, headers);
 
         // when

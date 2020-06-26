@@ -13,6 +13,11 @@ public class InfoResponse {
     public InfoResponse() {
     }
 
+    public InfoResponse(String error, String error_description) {
+        this.error = error;
+        this.error_description = error_description;
+    }
+
     public InfoResponse(Cert cert, Key key, Boolean multisign, String error, String error_description, String authMode, String SCAL) {
         this.cert = cert;
         this.key = key;

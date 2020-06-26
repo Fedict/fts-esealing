@@ -16,6 +16,11 @@ public class SignResponse {
     public SignResponse() {
     }
 
+    public SignResponse(String error, String error_description) {
+        this.error = error;
+        this.error_description = error_description;
+    }
+
     public SignResponse(Cert cert, Key key, Boolean multisign, String error, String error_description, String policy, String responseID, String signaturePolicyID, String[] signaturePolicyLocations, String[] signatures) {
         this.cert = cert;
         this.key = key;
