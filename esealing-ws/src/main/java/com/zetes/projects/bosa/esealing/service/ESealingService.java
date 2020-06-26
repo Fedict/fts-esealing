@@ -10,13 +10,13 @@ public class ESealingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ESealingService.class);
 
-    public ListResponse getCredentialsList(ListRequest listRequest) {
+    public ListResponse getCredentialsList(String authorization, ListRequest listRequest) {
         LOG.info("Getting credentials list...");
 
         return new ListResponse("error", "error_description", "policy", "responseID");
     }
 
-    public InfoResponse getCredentialsInfo(InfoRequest infoRequest) {
+    public InfoResponse getCredentialsInfo(String authorization, InfoRequest infoRequest) {
         LOG.info("Getting credentials info...");
 
         Cert cert = new Cert("status", new String[]{"certificates"}, "validFrom", "validTo", "issuerDN", "serialNumber", "subjectDN");
@@ -24,7 +24,7 @@ public class ESealingService {
         return new InfoResponse(cert, key, true, "error", "error_description", "authMode", "SCAL");
     }
 
-    public SignResponse signHash(SignRequest signRequest) {
+    public SignResponse signHash(String authorization, SignRequest signRequest) {
         LOG.info("Signing hash...");
 
         Cert cert = new Cert("status", new String[]{"certificates"}, "validFrom", "validTo", "issuerDN", "serialNumber", "subjectDN");

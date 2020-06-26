@@ -21,18 +21,18 @@ public class ESealingController {
     }
 
     @PostMapping(value = "/credentials/list", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public ListResponse credentialsList(@RequestBody ListRequest listRequest) {
-        return ESealingService.getCredentialsList(listRequest);
+    public ListResponse credentialsList(@RequestHeader("Authorization") String authorization, @RequestBody ListRequest listRequest) {
+        return ESealingService.getCredentialsList(authorization, listRequest);
     }
 
     @PostMapping(value = "/credentials/info", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public InfoResponse credentialsInfo(@RequestBody InfoRequest infoRequest) {
-        return ESealingService.getCredentialsInfo(infoRequest);
+    public InfoResponse credentialsInfo(@RequestHeader("Authorization") String authorization, @RequestBody InfoRequest infoRequest) {
+        return ESealingService.getCredentialsInfo(authorization, infoRequest);
     }
 
     @PostMapping(value = "/signatures/signHash", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public SignResponse signHash(@RequestBody SignRequest signRequest) {
-        return ESealingService.signHash(signRequest);
+    public SignResponse signHash(@RequestHeader("Authorization") String authorization, @RequestBody SignRequest signRequest) {
+        return ESealingService.signHash(authorization, signRequest);
     }
 
 }
