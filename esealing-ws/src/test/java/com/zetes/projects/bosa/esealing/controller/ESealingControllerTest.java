@@ -47,7 +47,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         ListRequest listRequest = new ListRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("bosa", "123456");
+        headers.setBasicAuth("selor", "test123");
         HttpEntity<ListRequest> request = new HttpEntity<>(listRequest, headers);
 
         // when
@@ -62,7 +62,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         InfoRequest infoRequest = new InfoRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("bosa", "123456");
+        headers.setBasicAuth("selor", "test123");
         HttpEntity<InfoRequest> request = new HttpEntity<>(infoRequest, headers);
 
         // when
@@ -77,7 +77,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         DsvRequest dsvRequest = new DsvRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("bosa", "123456");
+        headers.setBasicAuth("selor", "test123");
         HttpEntity<DsvRequest> request = new HttpEntity<>(dsvRequest, headers);
 
         // when

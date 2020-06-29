@@ -1,5 +1,8 @@
 package com.zetes.projects.bosa.esealing.service;
 
+import com.zetes.projects.bosa.esealing.exception.ESealException;
+import com.zetes.projects.bosa.esealing.model.DsvRequest;
+
 class SADChecker {
 
 	private static SADChecker sadChecker = null;
@@ -15,5 +18,9 @@ class SADChecker {
 
 	public String getAuthMode() {
 		return "identificationToken";
+	}
+
+	public void checkDsv(DsvRequest dsvRequest) throws ESealException {
+		// TODO
 	}
 }

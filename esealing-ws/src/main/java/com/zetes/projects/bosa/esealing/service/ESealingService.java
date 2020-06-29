@@ -27,7 +27,8 @@ public class ESealingService {
 
         String[] auth = checkAuthorization(authorization);
 
-        return Hsm.getHsm().getCredentialsInfo(auth[0], auth[1].toCharArray(), infoRequest.getCredentialID(), infoRequest.getReturnCertificates(), infoRequest.getCertInfo(), infoRequest.getAuthInfo());
+        return Hsm.getHsm().getCredentialsInfo(auth[0], auth[1].toCharArray(), infoRequest.getCredentialID(),
+                infoRequest.getReturnCertificates(), infoRequest.getCertInfo(), infoRequest.getAuthInfo());
     }
 
     public DsvResponse signHash(String authorization, DsvRequest dsvRequest) throws ESealException {
@@ -35,7 +36,7 @@ public class ESealingService {
 
         String[] auth = checkAuthorization(authorization);
 
-        // TODO: check dsvRequest.getSAD()
+        SADChecker.getInstance().checkDsv(dsvRequest);
 
         return Hsm.getHsm().signHash(auth[0], auth[1].toCharArray(), dsvRequest.getCredentialID(),
                 dsvRequest.getOptionalData(), dsvRequest.getSignAlgo(), dsvRequest.getDocumentDigests());

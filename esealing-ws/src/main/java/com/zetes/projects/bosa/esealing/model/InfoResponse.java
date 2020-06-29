@@ -77,7 +77,7 @@ public class InfoResponse {
         this.error_description = error_description;
     }
 
-    /** Credential authorization mode: "implicit" or "explicit" or "authorizationCode" or "identificationToken" - see par 7.28.2 */
+    /** Credential authorization mode: "implicit" or "explicit" or "authorizationCode" or "identificationToken" - see par 7.28 */
     public String getAuthMode() {
         return authMode;
     }
