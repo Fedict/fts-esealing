@@ -1,5 +1,9 @@
 package com.zetes.projects.bosa.esealing.model;
 
+/**
+ * See https://www.etsi.org/deliver/etsi_ts/119400_119499/119432/01.01.01_60/ts_119432v010101p.pdf 2019-03, par 8.6.2
+ * See https://forge.etsi.org/rep/esi/x19_432_sign_creation_protocol/raw/v1.1.1/19432-openapi.yaml - certificate-information-retrieval-response
+ */
 public class InfoResponse {
 
     private Cert cert;
@@ -28,6 +32,7 @@ public class InfoResponse {
         this.SCAL = SCAL;
     }
 
+    /** Signing certificate info - see par 7.22.2 */
     public Cert getCert() {
         return cert;
     }
@@ -36,6 +41,7 @@ public class InfoResponse {
         this.cert = cert;
     }
 
+   /** Signing key info - see par 7.22.2 */
     public Key getKey() {
         return key;
     }
@@ -44,6 +50,7 @@ public class InfoResponse {
         this.key = key;
     }
 
+    /** If multiple signatures can be created with a signle authorization request - see par 7.22.2 */
     public Boolean getMultisign() {
         return multisign;
     }
@@ -52,6 +59,7 @@ public class InfoResponse {
         this.multisign = multisign;
     }
 
+    /** Error code - see par 7.24.2 */
     public String getError() {
         return error;
     }
@@ -60,6 +68,7 @@ public class InfoResponse {
         this.error = error;
     }
 
+    /** Error description - see par 7.24.2 */
     public String getError_description() {
         return error_description;
     }
@@ -68,6 +77,7 @@ public class InfoResponse {
         this.error_description = error_description;
     }
 
+    /** Credential authorization mode: "implicit" or "explicit" or "authorizationCode" or "identificationToken" - see par 7.28.2 */
     public String getAuthMode() {
         return authMode;
     }
@@ -76,6 +86,7 @@ public class InfoResponse {
         this.authMode = authMode;
     }
 
+    /** SCAL level required: "SCAL1" or "SCAL2" - see par 7.30.2 */
     public String getSCAL() {
         return SCAL;
     }

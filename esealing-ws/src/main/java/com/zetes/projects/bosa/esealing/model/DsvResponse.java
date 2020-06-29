@@ -1,5 +1,9 @@
 package com.zetes.projects.bosa.esealing.model;
 
+/**
+ * See https://www.etsi.org/deliver/etsi_ts/119400_119499/119432/01.01.01_60/ts_119432v010101p.pdf 2019-03, par 8.3.2
+ * See https://forge.etsi.org/rep/esi/x19_432_sign_creation_protocol/raw/v1.1.1/19432-openapi.yaml - DSV-creation-request
+ */
 public class DsvResponse {
 
     private Cert cert;
@@ -21,7 +25,8 @@ public class DsvResponse {
         this.error_description = error_description;
     }
 
-    public DsvResponse(Cert cert, Key key, Boolean multisign, String error, String error_description, String policy, String responseID, String signaturePolicyID, String[] signaturePolicyLocations, String[] signatures) {
+    public DsvResponse(Cert cert, Key key, Boolean multisign, String error, String error_description, String policy,
+		String responseID, String signaturePolicyID, String[] signaturePolicyLocations, String[] signatures) {
         this.cert = cert;
         this.key = key;
         this.multisign = multisign;
@@ -34,6 +39,7 @@ public class DsvResponse {
         this.signatures = signatures;
     }
 
+    /** Signing certificate info - see par 7.22.2 */
     public Cert getCert() {
         return cert;
     }
@@ -42,6 +48,7 @@ public class DsvResponse {
         this.cert = cert;
     }
 
+   /** Signing key info - see par 7.22.2 */
     public Key getKey() {
         return key;
     }
@@ -50,6 +57,7 @@ public class DsvResponse {
         this.key = key;
     }
 
+    /** If multiple signatures can be created with a signle authorization request - see par 7.22.2 */
     public Boolean getMultisign() {
         return multisign;
     }
@@ -58,6 +66,7 @@ public class DsvResponse {
         this.multisign = multisign;
     }
 
+    /** Error code - see par 7.24.2 */
     public String getError() {
         return error;
     }
@@ -66,6 +75,7 @@ public class DsvResponse {
         this.error = error;
     }
 
+    /** Error description - see par 7.24.2 */
     public String getError_description() {
         return error_description;
     }
@@ -74,6 +84,7 @@ public class DsvResponse {
         this.error_description = error_description;
     }
 
+    /** Name of the service policy that was used - see par 7.25.2 */
     public String getPolicy() {
         return policy;
     }
@@ -82,6 +93,7 @@ public class DsvResponse {
         this.policy = policy;
     }
 
+    /** Unique identification of this response */
     public String getResponseID() {
         return responseID;
     }
@@ -90,6 +102,7 @@ public class DsvResponse {
         this.responseID = responseID;
     }
 
+    /** see par 7.2 */
     public String getSignaturePolicyID() {
         return signaturePolicyID;
     }
@@ -98,6 +111,7 @@ public class DsvResponse {
         this.signaturePolicyID = signaturePolicyID;
     }
 
+    /** URIs referering to the signature creation policy - see par 7.27.2 */
     public String[] getSignaturePolicyLocations() {
         return signaturePolicyLocations;
     }
@@ -110,6 +124,7 @@ public class DsvResponse {
         return signatures;
     }
 
+    /** Signature(s) - see par 7.29.2 */
     public void setSignatures(String[] signatures) {
         this.signatures = signatures;
     }

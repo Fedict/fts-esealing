@@ -1,10 +1,17 @@
 package com.zetes.projects.bosa.esealing.service;
 
 import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.ECKey;
+import java.security.interfaces.RSAPublicKey;
 import java.io.ByteArrayInputStream;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.text.SimpleDateFormat;
 import javax.xml.bind.DatatypeConverter;
 
 import com.zetes.projects.bosa.esealing.exception.ESealException;
@@ -22,9 +29,15 @@ import org.slf4j.LoggerFactory;
  *   credentialID               = HSM key label
  * </pre>
  */
-public class Hsm {
+class Hsm {
+
+	private static final String POLICY = "Just for testing, pretty insecure";
+	private static final String SIG_POLICY_ID = "Test signatures in software (no HSM)";
+	private static final String SCAL = "SCAL1";
 
 	private static final Logger LOG = LoggerFactory.getLogger(Hsm.class);
+
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDDHHMMSSZ");
 
 	private static Hsm hsm;
 
@@ -40,10 +53,10 @@ public class Hsm {
 	}
 
 	public ListResponse getCredentialsList(String userName, char[] userPwd, String certificates) throws ESealException {
+
 		KeyStore ks = getKeyStore(userName, userPwd);
 
 		try {
-
 			Vector<String> credentialIds = new Vector<String>(10);
 			Vector<String> certs =         new Vector<String>(10);
 
@@ -71,6 +84,158 @@ public class Hsm {
 			LOG.error("Hsm.getCredentialsList(): " + e.toString(), e);
 			throw new ESealException(500, "Internal error", e.getMessage());
 		}
+	}
+
+	public InfoResponse getCredentialsInfo(String userName, char[] userPwd, String keyName, String returnCerts,
+		Boolean getCertInfo, Boolean getAuthInfo) throws ESealException {
+	
+		KeyStore ks = getKeyStore(userName, userPwd);
+
+		try {
+			KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry)
+				ks.getEntry(keyName, new KeyStore.PasswordProtection(userPwd));
+			Certificate[] chain = entry.getCertificateChain();
+
+			boolean needCertAndKeyInfo = Boolean.TRUE.equals(getCertInfo);
+
+			Cert cert = needCertAndKeyInfo ? makeCertInfo(chain, returnCerts) : null;
+
+			Key key = needCertAndKeyInfo ? makeKeyInfo(chain[0]) : null;
+
+			Boolean multisign = Boolean.TRUE;
+
+			String authMode = Boolean.TRUE.equals(getAuthInfo) ? SADChecker.getInstance().getAuthMode() : null;
+
+			return new InfoResponse(cert, key, multisign, "OK", null, authMode, SCAL);
+		}
+		catch (Exception e) {
+			LOG.error("Hsm.getCredentialsList(): " + e.toString(), e);
+			throw new ESealException(500, "Internal error", e.getMessage());
+		}
+	}
+
+	public DsvResponse signHash(String userName, char[] userPwd, String keyName, OptionalData optionalData,
+			String signAlgo, Digest documentDigests) throws ESealException {
+
+		KeyStore ks = getKeyStore(userName, userPwd);
+
+		try {
+			String[] hashes = documentDigests.getHashes();
+
+			KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry)
+				ks.getEntry(keyName, new KeyStore.PasswordProtection(userPwd));
+			PrivateKey privKey = entry.getPrivateKey();
+			Certificate[] chain = entry.getCertificateChain();
+
+			String signAlgoJava = getAndCheckSignAlgo(signAlgo, documentDigests.getHashAlgorithmOID(), privKey.getAlgorithm(), hashes[0]);
+			Signature signature = Signature.getInstance(signAlgoJava);
+
+			String[] sigs = new String[hashes.length];
+			for (int i = 0; i < sigs.length; i++) {
+				signature.initSign(privKey);
+				signature.update(DatatypeConverter.parseBase64Binary(hashes[i]));
+				sigs[i] = DatatypeConverter.printBase64Binary(signature.sign());
+			}
+
+			return makeDsvResponse(optionalData, chain, sigs);
+		}
+		catch (Exception e) {
+			LOG.error("Hsm.getCredentialsList(): " + e.toString(), e);
+			throw new ESealException(500, "Internal error", e.getMessage());
+		}
+	}
+
+	private String getAndCheckSignAlgo(String signAlgoOid, String hashAlgoOid, String keyAlgo, String hashB64) throws ESealException {
+		if (keyAlgo.contains("EC"))
+			return "NoneWithECDSA";
+
+		// Assume it's an RSA key
+		int hashLen = hashB64.length() * 3 / 4;
+		// TODO
+		throw new ESealException(500, "RSA not yet supported", "try with an EC key instead...");
+	}
+
+	private DsvResponse makeDsvResponse(OptionalData optData, Certificate[] chain, String[] sigs) throws Exception {
+		boolean needCertAndKeyInfo = null != optData && Boolean.TRUE.equals(optData.getReturnSigningCertificateInfo());
+		Cert cert = needCertAndKeyInfo ? makeCertInfo(chain, "chain") : null;
+		Key key = needCertAndKeyInfo ?   makeKeyInfo(chain[0]) : null;
+
+		Boolean multisign = (null != optData && Boolean.TRUE.equals(optData.getReturnSupportMultiSignatureInfo())) ? Boolean.TRUE : false;
+
+		String policy = (null != optData && Boolean.TRUE.equals(optData.getReturnServicePolicyInfo())) ? POLICY : null;
+
+		String responseID = (new Long(System.nanoTime())).toString(36);
+
+		String signaturePolicyID = (null != optData && Boolean.TRUE.equals(optData.getReturnSignatureCreationPolicyInfo())) ? SIG_POLICY_ID : null;
+		String[] signaturePolicyLocations =  null;
+
+		return new DsvResponse(cert, key, multisign, "OK", null, policy, responseID, signaturePolicyID, signaturePolicyLocations, sigs);
+	}
+
+	private Cert makeCertInfo(Certificate[] chain, String returnCerts) throws Exception {
+		X509Certificate signingCert = (X509Certificate) chain[0];
+
+		String status = System.currentTimeMillis() < signingCert.getNotAfter().getTime() ? "valid" : "expired";
+
+		String[] certificates = null;
+		if (!"none".equals(returnCerts)) {
+			certificates = new String[chain.length];
+			int len = "chain".equals(returnCerts) ? chain.length : 1;
+			for (int i = 0; i < len; i++)
+				certificates[i] = DatatypeConverter.printBase64Binary(chain[i].getEncoded());
+		}
+
+		String validFrom = sdf.format(signingCert.getNotBefore());
+
+		String validTo = sdf.format(signingCert.getNotAfter());
+
+		String issuerDN = signingCert.getIssuerX500Principal().toString();
+
+		String serialNumber = signingCert.getSerialNumber().toString(16);
+
+		String subjectDN = signingCert.getSubjectX500Principal().toString();
+		
+		return new Cert(status, certificates, validFrom, validTo, issuerDN, serialNumber, subjectDN);
+	}
+
+	private Key makeKeyInfo(Certificate signingCert) throws Exception {
+		PublicKey pubKey = signingCert.getPublicKey();
+		
+		int keyLen = 0;
+		String curve = null;
+		if (pubKey instanceof ECKey) {
+			keyLen = ((ECKey) pubKey).getParams().getCurve().getField().getFieldSize();
+			// getEncoded() result looks like this:
+			//   0 118: SEQUENCE {
+			//     2  16:   SEQUENCE {
+			//     4   7:     OBJECT IDENTIFIER ecPublicKey (1 2 840 10045 2 1)
+			//    13   5:     OBJECT IDENTIFIER secp384r1 (1 3 132 0 34)
+			//          :     }
+			//    20  98:   BIT STRING
+			//          :     04 22 13 13 F5 E9 50 DB 81 BC 3A EC 06 06 27 3A
+			//                ...
+			Der der = new Der(pubKey.getEncoded());
+			der = der.getChild(0x30);
+			der = der.getChild(0x06, 1); // this is the 2nd object identifier
+			curve = der.getOidValue();
+		}
+		else if (pubKey instanceof RSAPublicKey)
+			keyLen = ((RSAPublicKey) pubKey).getModulus().bitLength();
+
+		String status = "enabled";
+
+		String[] algo = new String[] {
+			"1.2.840.10045.4.1",       // ecdsa-with-SHA1
+			"1.2.840.10045.4.2",       // ecdsa-with-Recommended
+			"1.2.840.10045.4.3.1",     // ecdsa-with-SHA224
+			"1.2.840.10045.4.3.2",     // ecdsa-with-SHA256
+			"1.2.840.10045.4.3.3",     // ecdsa-with-SHA384
+			"1.2.840.10045.4.3.4",     // ecdsa-with-SHA512
+		};
+
+		Integer len = new Integer(keyLen);
+
+		return new Key(status, algo, len, curve);
 	}
 
 	private String convertCerts(Certificate[] chain, String certificates) throws Exception {

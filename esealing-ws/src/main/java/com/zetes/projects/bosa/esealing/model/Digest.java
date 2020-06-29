@@ -8,6 +8,10 @@ public class Digest {
     public Digest() {
     }
 
+    /**
+     * @param hashes           base64-encoded hash value
+     * @param hashAlgorithmOID e.g. "1.3.14.3.2.26" for SHA1, "2.16.840.1.101.3.4.2.1" for SHA256, "2.16.840.1.101.3.4.2.2" for SHA384
+     */
     public Digest(String[] hashes, String hashAlgorithmOID) {
         this.hashes = hashes;
         this.hashAlgorithmOID = hashAlgorithmOID;

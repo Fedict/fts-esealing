@@ -26,7 +26,7 @@ public class ListResponse {
         this.error_description = error_description;
     }
 
-    /** Get the error code - see par 7.24.2 */
+    /** Error code - see par 7.24.2 */
     public String getError() {
         return error;
     }

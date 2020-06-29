@@ -1,6 +1,10 @@
 package com.zetes.projects.bosa.esealing.model;
 
-public class Cert {
+/**
+ * See https://www.etsi.org/deliver/etsi_ts/119400_119499/119432/01.01.01_60/ts_119432v010101p.pdf 2019-03, par 7.22
+ * See https://forge.etsi.org/rep/esi/x19_432_sign_creation_protocol/raw/v1.1.1/19432-openapi.yaml - cert
+ */
+ public class Cert {
 
     private String status;
     private String[] certificates;
@@ -23,6 +27,7 @@ public class Cert {
         this.subjectDN = subjectDN;
     }
 
+    /** Returns "valid" or "expired" or "evoked" or "suspended" */
     public String getStatus() {
         return status;
     }
@@ -31,6 +36,7 @@ public class Cert {
         this.status = status;
     }
 
+    /** Base64-encoded certificate chain, starting with the signing cert */
     public String[] getCertificates() {
         return certificates;
     }
@@ -39,6 +45,7 @@ public class Cert {
         this.certificates = certificates;
     }
 
+    /** Cert begin validity date in 'YYYYMMDDHHMMSSZ' GeneralizedTime format, e.g. "20200122150100+0100"*/
     public String getValidFrom() {
         return validFrom;
     }
@@ -47,6 +54,7 @@ public class Cert {
         this.validFrom = validFrom;
     }
 
+    /** Cert end validity datein 'YYYYMMDDHHMMSSZ' GeneralizedTime format, e.g. "20320108150100+0100" */
     public String getValidTo() {
         return validTo;
     }
@@ -55,7 +63,8 @@ public class Cert {
         this.validTo = validTo;
     }
 
-    public String getIssuerDN() {
+    /** Issuer DN, e.g. "C=BE,O=fgov,OU=BOSA,CN=Test CA" */
+     public String getIssuerDN() {
         return issuerDN;
     }
 
@@ -63,7 +72,8 @@ public class Cert {
         this.issuerDN = issuerDN;
     }
 
-    public String getSerialNumber() {
+   /** Serialnumber in hex */
+   public String getSerialNumber() {
         return serialNumber;
     }
 
@@ -75,6 +85,7 @@ public class Cert {
         return subjectDN;
     }
 
+    /** Subject DN, e.g. "C=BE,O=fgov,OU=BOSA,CN=Test" */
     public void setSubjectDN(String subjectDN) {
         this.subjectDN = subjectDN;
     }

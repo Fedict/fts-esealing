@@ -25,17 +25,20 @@ public class ESealingService {
     public InfoResponse getCredentialsInfo(String authorization, InfoRequest infoRequest) throws ESealException {
         LOG.info("Getting credentials info...");
 
-        Cert cert = new Cert("status", new String[]{"certificates"}, "validFrom", "validTo", "issuerDN", "serialNumber", "subjectDN");
-        Key key = new Key("status", new String[]{"algo"}, 1, 1);
-        return new InfoResponse(cert, key, true, "error", "error_description", "authMode", "SCAL");
+        String[] auth = checkAuthorization(authorization);
+
+        return Hsm.getHsm().getCredentialsInfo(auth[0], auth[1].toCharArray(), infoRequest.getCredentialID(), infoRequest.getReturnCertificates(), infoRequest.getCertInfo(), infoRequest.getAuthInfo());
     }
 
     public DsvResponse signHash(String authorization, DsvRequest dsvRequest) throws ESealException {
         LOG.info("Signing hash...");
 
-        Cert cert = new Cert("status", new String[]{"certificates"}, "validFrom", "validTo", "issuerDN", "serialNumber", "subjectDN");
-        Key key = new Key("status", new String[]{"algo"}, 1, 1);
-        return new DsvResponse(cert, key, true, "error", "error_description", "policy", "responseID", "signaturePolicyID", new String[]{"signaturePolicyLocations"}, new String[]{"signatures"});
+        String[] auth = checkAuthorization(authorization);
+
+        // TODO: check dsvRequest.getSAD()
+
+        return Hsm.getHsm().signHash(auth[0], auth[1].toCharArray(), dsvRequest.getCredentialID(),
+                dsvRequest.getOptionalData(), dsvRequest.getSignAlgo(), dsvRequest.getDocumentDigests());
     }
 
 	private String[] checkAuthorization(String authorization) throws ESealException {

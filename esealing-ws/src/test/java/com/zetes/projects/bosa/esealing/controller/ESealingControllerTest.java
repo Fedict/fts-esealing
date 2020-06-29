@@ -77,7 +77,7 @@ public class ESealingControllerTest extends ESealingTestBase {
         // given
         DsvRequest dsvRequest = new DsvRequest();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("abc", "def");
+        headers.setBasicAuth("bosa", "123456");
         HttpEntity<DsvRequest> request = new HttpEntity<>(dsvRequest, headers);
 
         // when
