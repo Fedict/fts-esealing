@@ -36,7 +36,7 @@ public class ESealingService {
 
         String[] auth = checkAuthorization(authorization);
 
-        SADChecker.getInstance().checkDsv(dsvRequest);
+        SADChecker.getInstance().checkDsv(auth[0], auth[1].toCharArray(), dsvRequest);
 
         return Hsm.getHsm().signHash(auth[0], auth[1].toCharArray(), dsvRequest.getCredentialID(),
                 dsvRequest.getOptionalData(), dsvRequest.getSignAlgo(), dsvRequest.getDocumentDigests());
