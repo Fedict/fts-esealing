@@ -58,6 +58,13 @@
           <version>7.1</version>
         </dependency>
 
+	<!-- IAIK sunpkcs11-wrapper, to access an HSM -->
+	<dependency>
+		<groupId>org.xipki.iaik</groupId>
+		<artifactId>sunpkcs11-wrapper</artifactId>
+		<version>1.4.7</version>
+	</dependency>
+
     </dependencies>
 
 </project>
