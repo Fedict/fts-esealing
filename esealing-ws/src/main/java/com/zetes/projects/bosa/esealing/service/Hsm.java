@@ -17,15 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Access to the HSM.
- * <pre>
- * Mapping:
- *   username                   = HSM slot userName
- *   userPwd + internal secret  = HSM slot passwd
- *   credentialID               = HSM key label
- * </pre>
+ * Provides fall-back to HsmSoft.java in case HsmPks11.java can't be used.
+ * Only for demo purposes, disable HsmSoft (see ALLOW_HSM_SOFT) if you would use this in real situations!
  */
 abstract class Hsm {
+	/** Set to false if you want to use this in production! */
+	public static boolean ALLOW_HSM_SOFT = true;
+
 	protected static final String SCAL = "SCAL1";
 
 	private static final Logger LOG = LoggerFactory.getLogger(Hsm.class);
@@ -41,8 +39,10 @@ abstract class Hsm {
 			}
 			catch (Exception e) {
 				LOG.error("getHsm(): HsmPkcs11 instantiantion failed: " + e.toString(), e);
-
-				hsm = new HsmSoft();
+				if (ALLOW_HSM_SOFT)
+					hsm = new HsmSoft();
+				else
+					throw new ESealException(500, "HSM not available", e.getMessage());
 			}
 		}
 

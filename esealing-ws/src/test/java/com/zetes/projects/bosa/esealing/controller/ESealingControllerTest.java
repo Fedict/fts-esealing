@@ -45,7 +45,14 @@ public class ESealingControllerTest extends ESealingTestBase {
     @Test
     public void testCredentialsList() throws Exception {
         // given
-        ListRequest listRequest = new ListRequest();
+        String requestId = "sdklzelfqlfsmqzpmeifsl";
+	Boolean certInfo = false;
+	Boolean authInfo = false;
+	String profile = "http://uri.etsi.org/19432/v1.1.1/certificateslistprotocol#";
+	String signerIdentity = null;
+	String lang = "en";
+	String certs = "none";
+	ListRequest listRequest = new ListRequest(requestId, lang, certs, certInfo, authInfo, profile, signerIdentity);
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("selor", "test123");
         HttpEntity<ListRequest> request = new HttpEntity<>(listRequest, headers);
@@ -55,12 +62,20 @@ public class ESealingControllerTest extends ESealingTestBase {
 
         // then
         assertNotNull(response);
+        assertEquals("OK", response.getError());
     }
 
     @Test
     public void testCredentialsInfo() throws Exception {
         // given
-        InfoRequest infoRequest = new InfoRequest();
+	String requestId = "837620383892799873630";
+	Boolean certInfo = true;
+	Boolean authInfo = true;
+	String profile = "http://uri.etsi.org/19432/v1.1.1/credentialinfoprotocol#";
+	String credentialID = "intermediate_recruitment";
+	String lang = "en";
+	String certs = "chain";
+	InfoRequest infoRequest = new InfoRequest(requestId, credentialID, lang, certs, certInfo, authInfo, profile);
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("selor", "test123");
         HttpEntity<InfoRequest> request = new HttpEntity<>(infoRequest, headers);
@@ -70,12 +85,35 @@ public class ESealingControllerTest extends ESealingTestBase {
 
         // then
         assertNotNull(response);
+        assertEquals("OK", response.getError());
     }
 
     @Test
     public void testSignHash() throws Exception {
         // given
-        DsvRequest dsvRequest = new DsvRequest();
+
+	String operationMode = "S";
+	String requestId = "1159445535673610071799690907";
+	String lang = "en";
+	String credentialID = "final_recruitment";
+	OptionalData optionalData = new OptionalData(true, true, true, true, true, true);
+	Integer validity_period = null;
+	Integer numSignatures = new Integer(1);
+	String policy = null;
+	String signaturePolicyID = null;
+	String response_uri = null;
+	String signAlgoParams = null;
+	String signOID = "1.2.840.10045.4.3.3";  // ecdsa-with-SHA384
+	String digestOID = "2.16.840.1.101.3.4.2.2"; // SHA384
+	String[] digestsB64 = new String[] {
+		"5nyRwCYYZO7KXu8RpLgOAyb9SA+pNcvrFcyYQ1VohJEpPlra9psyUm1WqIJ826a0",
+		"TF7cQNdjOBTH5v4RoaX7hf5A7/GpmfP51bFi3EfgxFj92stT1h6rnI88OJTaIEhM",
+	};
+	Digest documentDigests = new Digest(digestsB64, digestOID);
+	String SAD = "eyJraWQiOiJmNWU4Mjg0YTJiNWM5YTVhZmUxNGQ1NzJmZTEzZThmNiIsImFsZyI6IkVTMzg0In0.eyJoYXNoZXMiOlsiNW55UndDWVlaTzdLWHU4UnBMZ09BeWI5U0ErcE5jdnJGY3lZUTFWb2hKRXBQbHJhOXBzeVVtMVdxSUo4MjZhMCIsIlRGN2NRTmRqT0JUSDV2NFJvYVg3aGY1QTcvR3BtZlA1MWJGaTNFZmd4Rmo5MnN0VDFoNnJuSTg4T0pUYUlFaE0iXSwiaGFzaEFsZ29yaXRobU9JRCI6IjIuMTYuODQwLjEuMTAxLjMuNC4yLjIifQ._KPbpaLOjc_4xrmZMVgv2hbHNIt2r_nhW58ecmoaoj8fSn7FhFnVfp43Up7KCswxLXez9fxjVrLujVbqFlPdvqiqp1ED3q9aVBBeQ4yBkSmkIzWcwQpIGQLZ2TpMkZ10";
+	DsvRequest dsvRequest = new DsvRequest(operationMode, requestId, SAD, optionalData, validity_period,
+		credentialID, lang, numSignatures, policy, signaturePolicyID, signOID, signAlgoParams, response_uri, documentDigests);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("selor", "test123");
         HttpEntity<DsvRequest> request = new HttpEntity<>(dsvRequest, headers);
@@ -85,6 +123,6 @@ public class ESealingControllerTest extends ESealingTestBase {
 
         // then
         assertNotNull(response);
+        assertEquals("OK", response.getError());
     }
-
 }

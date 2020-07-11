@@ -23,13 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Access to the HSM.
- * <pre>
- * Mapping:
- *   username                   = HSM slot userName
- *   userPwd + internal secret  = HSM slot passwd
- *   credentialID               = HSM key label
- * </pre>
+ * Fall-back for the HsmPkcs11 class in case no HSM is available - only for testing.
+ * Only supports EC keys, no RSA keys.
+ * A PKCS12 keystore is harcoded (at the end of the file), containing 2 secp384r1 keys.
  */
 class HsmSoft extends Hsm {
 	private static final String POLICY = "Just for testing (software keys), pretty insecure";

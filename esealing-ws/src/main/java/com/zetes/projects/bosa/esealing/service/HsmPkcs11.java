@@ -38,12 +38,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Access to the HSM.
+ * Access to the HSM. <br>
+ * Many server signing application seem to store the signature keys in a database, encrypted by a master key in the HSM.
+ * However to avoid a database and cut development costs, we decided another approach: each "customer" is given a slot
+ * on the HSM that contains the keys for this customer. <br>
+ * As the calls to this service as based on a username and password, the following mapping is done:
  * <pre>
- * Mapping:
- *   username                   = HSM slot userName
- *   userPwd + internal secret  = HSM slot passwd
- *   credentialID               = HSM key label
+ *   username        = HSM slot label
+ *   userPwd         = HSM slot 'PIN'
+ *   credentialID    = the label of a key within this HSM slot
  * </pre>
  */
 class HsmPkcs11 extends Hsm {
