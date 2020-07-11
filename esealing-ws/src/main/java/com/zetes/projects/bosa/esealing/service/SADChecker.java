@@ -20,6 +20,13 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Checks the SAD (authentication data) in a 'signHash' request.
+ * In this case, the SAD is a JWS (a signed JSON) that contains the hashes to be signed.
+ * Only the hashes found in this SAD are signed.
+ * The certificate to verify the SAD JWS must be present in the HSM token that corresponds with this 'userName',
+ * the 'kid' value in the JWS must be the hex dump of the certificate serial number.
+ */
 class SADChecker {
 	private static final Logger LOG = LoggerFactory.getLogger(Hsm.class);
 
@@ -42,7 +49,7 @@ class SADChecker {
 		LOG.info("Checking SAD list...");
 
 		try {
-			// Parse the SAD (which is a JWT)
+			// Parse the SAD (which is a JWT/JWS)
 			String sadStr = dsvRequest.getSAD();
 			JWSObject sad = JWSObject.parse(sadStr);
 

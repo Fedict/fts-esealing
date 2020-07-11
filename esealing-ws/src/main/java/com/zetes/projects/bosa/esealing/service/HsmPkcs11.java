@@ -48,6 +48,8 @@ import org.slf4j.LoggerFactory;
  *   userPwd         = HSM slot 'PIN'
  *   credentialID    = the label of a key within this HSM slot
  * </pre>
+ * Apart from the signing keys and certificate chains, the HSM slot must also contain the 'SAD certificate' that must
+ * be used to verify the SAD data (see SADChecker.java)
  */
 class HsmPkcs11 extends Hsm {
 	public static String PKCS11_PATH = "/usr/local/lib/softhsm/libsofthsm2.so";
@@ -164,6 +166,12 @@ class HsmPkcs11 extends Hsm {
 		throw new ESealException(404, "Not found", "SAD signing certificate not found");
 	}
 
+	/**
+	 * The first time this method is called for the 'userName', the corresponding token is read
+	 *  and the info is put in an HsmTokenInfo object that is stored in the 'tokens' map.
+	 *  The next times, this HsmTokenInfo is just retreived from the 'tokens' map and only a login is done
+	 *  to check that the userPwd (= the slot PIN) is correct.
+	 */
 	private HsmTokenInfo getTokenInfo(String userName, char[] userPw) throws ESealException {
 		HsmTokenInfo tokenInfo = tokens.get(userName);
 
