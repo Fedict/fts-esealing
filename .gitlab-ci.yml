@@ -1,0 +1,47 @@
+stages:
+- compile
+- test
+- package
+- deploy
+
+image: maven:latest
+
+before_script:
+- docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+cache:
+  key: "$CI_PIPELINE_ID"
+
+compile:
+  stage: compile
+  script:
+  - mvn compile
+
+test:
+  stage: test
+  script:
+  - mvn test
+  allow_failure: true
+
+package:
+  stage: package
+  script:
+  - mvn clean install -DskipTests
+  - docker build --build-arg http_proxy=http://dc-proxy.names.belgium.be:3128 --build-arg https_proxy=http://dc-proxy.names.belgium.be -t $CI_REGISTRY/eidas/esealing:$CI_COMMIT_REF_NAME .
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Pushing the image to the docker hub"
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - export HTTPS_PROXY="$HTTPS_PROXY_SERVER"
+    - oc login https://$OPENSHIFT_SERVER --token=$OPENSHIFT_TOKEN_TEST
+    - oc rollout latest dc/$OPENSHIFT_POD -n $OPENSHIFT_PROJECT_TEST
+  except:
+  - master
+
+deploy_master:
+  stage: deploy
+  script:
+  - docker push $CI_REGISTRY/eidas/esealing:$CI_COMMIT_REF_NAME
+  when: manual
