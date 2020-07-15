@@ -27,7 +27,7 @@ package:
   stage: package
   script:
   - mvn clean install -DskipTests
-  - docker build --build-arg http_proxy=http://dc-proxy.names.belgium.be:3128 --build-arg https_proxy=http://dc-proxy.names.belgium.be -t $CI_REGISTRY/eidas/eseal:$CI_COMMIT_REF_NAME .
+  - docker build --build-arg http_proxy=http://dc-proxy.names.belgium.be:3128 --build-arg https_proxy=http://dc-proxy.names.belgium.be -t $CI_REGISTRY/eidas/esealing:$CI_COMMIT_REF_NAME .
 
 deploy:
   stage: deploy
@@ -43,5 +43,5 @@ deploy:
 deploy_master:
   stage: deploy
   script:
-  - docker push $CI_REGISTRY/eidas/eseal:$CI_COMMIT_REF_NAME
+  - docker push $CI_REGISTRY/eidas/esealing:$CI_COMMIT_REF_NAME
   when: manual

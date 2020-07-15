@@ -4,20 +4,20 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: container-eseal
+  name: container-esealing
   labels:
-    name: eseal
+    name: esealing
   annotations:
     description: Template for the eSealing service
 objects:
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
-      name: eseal
+      name: esealing
     spec:
       replicas: 1
       selector:
-        deploymentconfig: eseal
+        deploymentconfig: esealing
       strategy:
         resources: {}
         rollingParams:
@@ -30,11 +30,11 @@ objects:
       template:
         metadata:
           labels:
-            deploymentconfig: eseal
-            application: eseal
+            deploymentconfig: esealing
+            application: esealing
         spec:
           initContainers:
-          - image: registry-fsf.services.belgium.be:5000/eidas/eseal:latest
+          - image: registry-fsf.services.belgium.be:5000/eidas/esealing:latest
             name: softhsm
             command: ['sh', '-c', 'tar xvf /secret/softhsm-tokens.tgz -C /softhsm']
             volumeMounts:
@@ -43,9 +43,9 @@ objects:
             - name: secret
               mountPath: /secret
           containers:
-          - image: registry-fsf.services.belgium.be:5000/eidas/eseal:latest
+          - image: registry-fsf.services.belgium.be:5000/eidas/esealing:latest
             imagePullPolicy: Always
-            name: eseal
+            name: esealing
             volumeMounts:
             - name: softhsm-volume
               mountPath: /var/lib/softhsm
@@ -67,33 +67,33 @@ objects:
             emptyDir: {}
           - name: secret
             secret:
-              secretName: softhsm-tokens-eseal
+              secretName: softhsm-tokens-esealing
   - apiVersion: v1
     kind: Service
     metadata:
-      name: eseal-svc # You will use this name to link the route
+      name: esealing-svc # You will use this name to link the route
       annotations:
         description: "The Container Sign and Validatione"
     spec:
       selector:
-        deploymentconfig: eseal
+        deploymentconfig: esealing
       ports:
-        - name: eseal-web
+        - name: esealing-web
           port: 80
           protocol: TCP
           targetPort: 8080
-        - name: eseal-web-ssl
+        - name: esealing-web-ssl
           port: 443
           protocol: TCP
           targetPort: 8080
   - apiVersion: v1
     kind: Route
     metadata:
-      name: eseal
+      name: esealing
     spec:
-      host: eseal.ta.fts.bosa.belgium.be
+      host: esealing.ta.fts.bosa.belgium.be
       to:
         kind: Service
-        name: eseal-svc
+        name: esealing-svc
       port:
-        targetPort: eseal-web-ssl
+        targetPort: esealing-web-ssl
