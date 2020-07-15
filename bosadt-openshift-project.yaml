@@ -36,7 +36,7 @@ objects:
           initContainers:
           - image: registry-fsf.services.belgium.be:5000/eidas/esealing:latest
             name: softhsm
-            command: ['sh', '-c', 'tar xvf /secret/softhsm-tokens.tgz -C /softhsm']
+            command: ['sh', '-c', 'tar xvf /secret/softhsm-tokens-esealing.tgz -C /softhsm']
             volumeMounts:
             - name: softhsm-volume
               mountPath: /softhsm
