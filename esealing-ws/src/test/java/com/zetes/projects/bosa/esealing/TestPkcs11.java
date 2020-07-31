@@ -41,6 +41,7 @@ public class TestPkcs11 {
 		}
 		else {
 			System.out.println("Run without any parameters, or specify a token label + the user PIN of that token");
+			System.out.println("    E.g. 'selor test123'");
 			return;
 		}
 
@@ -115,14 +116,28 @@ public class TestPkcs11 {
 				}
 
 				makeSig(session, privKey, cert);
+//break;
 			}
 		}
 	}
 
 	private static void makeSig(Session session, PrivateKey privKey, X509Certificate cert) throws Exception {
 
-		byte[] tbs = new byte[1000];
-		byte[] hashVal = MessageDigest.getInstance("SHA-384").digest(tbs);
+		/*
+		byte[] hashAID = SHA384_AID;
+		int sha2HashLen = 384;
+
+		byte[] hashAID = SHA256_AID;
+		int sha2HashLen = 256;
+		*/
+		byte[] hashAID = SHA512_AID;
+		int sha2HashLen = 512;
+
+		byte[] tbs = new byte[100];
+		(new java.util.Random()).nextBytes(tbs);
+
+		String hashAlg = "SHA-" + sha2HashLen;
+		byte[] hashVal = MessageDigest.getInstance(hashAlg).digest(tbs);
 
 		if (privKey instanceof ECPrivateKey) {
 			System.out.println("\nTrying to sign with private EC key '" + privKey.getLabel() + "'");
@@ -140,20 +155,20 @@ public class TestPkcs11 {
 				GenDer.make(0x02, (new BigInteger(1, s)).toByteArray()),
 			});
 
-			checkSig(tbs, sigVal, "SHA384WithECDSA", cert);
+			checkSig(tbs, sigVal, "SHA" + sha2HashLen + "WithECDSA", cert);
 		}
 		else if (privKey instanceof RSAPrivateKey) {
 			System.out.println("\nTrying to sign with private RSA key '" + privKey.getLabel() + "'");
 			RSAPrivateKey rsaKey = (RSAPrivateKey) privKey;
 
-			byte[] sigInp = new byte[SHA384_AID.length + hashVal.length];
-			System.arraycopy(SHA384_AID, 0, sigInp, 0, SHA384_AID.length);
-			System.arraycopy(hashVal, 0, sigInp, SHA384_AID.length, hashVal.length);
+			byte[] sigInp = new byte[hashAID.length + hashVal.length];
+			System.arraycopy(hashAID, 0, sigInp, 0, hashAID.length);
+			System.arraycopy(hashVal, 0, sigInp, hashAID.length, hashVal.length);
 
 			session.signInit(new Mechanism(PKCS11Constants.CKM_RSA_PKCS), rsaKey);
 			byte[] sigVal = session.sign(sigInp);
 
-			checkSig(tbs, sigVal, "SHA384WithRSA", cert);
+			checkSig(tbs, sigVal, "SHA" + sha2HashLen + "WithRSA", cert);
 		}
 		else
 			System.out.println("\nCan't sign with key '" + privKey.getLabel() + ": not supported");
@@ -166,11 +181,11 @@ public class TestPkcs11 {
 			Signature signat = Signature.getInstance(algo);
 			signat.initVerify(cert.getPublicKey());
 			signat.update(tbs);
-			signat.verify(sigVal);
-			System.out.println("  verification with cert '" + cert.getSubjectX500Principal().toString() + "' succeeded");
+			boolean sigOK = signat.verify(sigVal);
+			System.out.println("  verification " + (sigOK ? "succeeded" : "failed"));
 		}
 		catch(Exception e) {
-			System.out.println("  verification with cert '" + cert.getSubjectX500Principal().toString() + "' failed: " + e.toString());
+			System.out.println("  verification failed: " + e.toString());
 		}
 	}
 
