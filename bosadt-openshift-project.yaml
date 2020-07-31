@@ -58,7 +58,7 @@ objects:
                 memory: 1024Mi
             livenessProbe:
               httpGet:
-                path: /ping
+                path: /esealing/ping
                 port: 8080
               periodSeconds: 30
               timeoutSeconds: 600
