@@ -142,7 +142,6 @@ class HsmPkcs11 extends Hsm {
 		finally {
 			closeSession(hsmTokenInfo);
 		}
-
 	}
 
 	public X509Certificate getSadSigningCert(String userName, char[] userPwd, String serialNumber) throws ESealException {
@@ -327,7 +326,7 @@ class HsmPkcs11 extends Hsm {
 				X509Certificate issuerCert = null;
 				for (int j = 0; j < certs.length; j++) {
 					if (issuerDn.equals(certs[j].getSubjectX500Principal())) {
-						issuerCert = null;
+						issuerCert = certs[j];
 						break;
 					}
 				}
@@ -399,11 +398,11 @@ class HsmPkcs11 extends Hsm {
 			LOG.info("Making RSA signature");
 			RSAPrivateKey rsaKey = (RSAPrivateKey) privKey;
 
-			byte[] aid = getAID(hashVal.length);
+			byte[] hashAID = getAID(hashVal.length);
 
-			byte[] sigInp = new byte[aid.length + hashVal.length];
-			System.arraycopy(aid, 0, sigInp, 0, aid.length);
-			System.arraycopy(hashVal, 0, sigInp, aid.length, hashVal.length);
+			byte[] sigInp = new byte[hashAID.length + hashVal.length];
+			System.arraycopy(hashAID, 0, sigInp, 0, hashAID.length);
+			System.arraycopy(hashVal, 0, sigInp, hashAID.length, hashVal.length);
 
 			session.signInit(new Mechanism(PKCS11Constants.CKM_RSA_PKCS), rsaKey);
 			byte[] sigVal = session.sign(sigInp);
