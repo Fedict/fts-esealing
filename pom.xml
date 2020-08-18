@@ -17,6 +17,7 @@
 
     <modules>
         <module>esealing-ws</module>
+        <module>esealing-client</module>
     </modules>
 
     <properties>
