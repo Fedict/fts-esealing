@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * be used to verify the SAD data (see SADChecker.java)
  */
 class HsmPkcs11 extends Hsm {
-	public static String PKCS11_PATH = "/usr/local/lib/softhsm/libsofthsm2.so";
+	public static String PKCS11_PATH = "/usr/lib/softhsm/libsofthsm2.so";
 
 	private static Module module;
 
