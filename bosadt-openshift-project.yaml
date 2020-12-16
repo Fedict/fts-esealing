@@ -1,0 +1,99 @@
+# this file can be processed by running something like:
+# oc process -f openshift/container-gateway.yml --param-file=openshift/container-gateway.env | oc create -f -
+
+apiVersion: v1
+kind: Template
+metadata:
+  name: container-esealing
+  labels:
+    name: esealing
+  annotations:
+    description: Template for the eSealing service
+objects:
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: esealing
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: esealing
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 100%
+          maxUnavailable: 0%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: esealing
+            application: esealing
+        spec:
+          initContainers:
+          - image: registry-fsf.services.belgium.be:5000/eidas/esealing:latest
+            name: softhsm
+            command: ['sh', '-c', 'tar xvf /secret/softhsm-tokens-esealing.tgz -C /softhsm']
+            volumeMounts:
+            - name: softhsm-volume
+              mountPath: /softhsm
+            - name: secret
+              mountPath: /secret
+          containers:
+          - image: registry-fsf.services.belgium.be:5000/eidas/esealing:latest
+            imagePullPolicy: Always
+            name: esealing
+            volumeMounts:
+            - name: softhsm-volume
+              mountPath: /var/lib/softhsm
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 1000m
+                memory: 1024Mi
+            livenessProbe:
+              httpGet:
+                path: /esealing/ping
+                port: 8080
+              periodSeconds: 30
+              timeoutSeconds: 600
+          volumes:
+          - name: softhsm-volume
+            emptyDir: {}
+          - name: secret
+            secret:
+              secretName: softhsm-tokens-esealing
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: esealing-svc # You will use this name to link the route
+      annotations:
+        description: "The Container Sign and Validatione"
+    spec:
+      selector:
+        deploymentconfig: esealing
+      ports:
+        - name: esealing-web
+          port: 80
+          protocol: TCP
+          targetPort: 8080
+        - name: esealing-web-ssl
+          port: 443
+          protocol: TCP
+          targetPort: 8080
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: esealing
+    spec:
+      host: esealing.ta.fts.bosa.belgium.be
+      to:
+        kind: Service
+        name: esealing-svc
+      port:
+        targetPort: esealing-web-ssl

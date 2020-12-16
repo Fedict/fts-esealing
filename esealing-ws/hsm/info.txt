@@ -1,0 +1,64 @@
+# Install sofhsm2
+sudo apt-get install softhsm2
+# What is installed:
+#  - the pkcs11 lib: /usr/local/lib/softhsm/libsofthsm2.so
+#  - tools: /usr/local/bin/softhsm2-util, ...
+#  - config file: /etc/softhsm2.conf
+#  - the keys that are created/imported: /var/lib/softhsm/tokens/
+
+# Logging:
+sudo nano /etc/softhsm2.conf
+   set log.level to DEBUG
+   to view the logs: sudo tail -f /var/log/syslog
+# Create a token named 'selor' with PIN = 'test123'
+softhsm2-util --init-token --free --label selor --so-pin sopin123 --pin test123
+
+# Convert selor_intermediate.p12 and selor_final.p12 to PEM format:
+openssl pkcs12 -in selor_intermediate.p12 -out selor_intermediate.pkcs8 -nocerts -nodes -passin pass:123456
+openssl pkcs12 -in selor_final.p12 -out selor_final.pkcs8 -nocerts -nodes -passin pass:123456
+openssl pkcs12 -in selor_final_rsa.p12 -out selor_final_rsa.pkcs8 -nocerts -nodes -passin pass:123456
+
+# Write the keys to the softhsm:
+softhsm2-util --import selor_intermediate.pkcs8 --token selor --label intermediate_recruitment --id 01 --pin test123
+softhsm2-util --import selor_final.pkcs8 --token selor --label final_recruitment --id 02 --pin test123
+softhsm2-util --import selor_final_rsa.pkcs8 --token selor --label final_recruitment_rsa --id 06 --pin test123
+
+# Extract the certificates from the pkcs12 key files:
+openssl pkcs12 -in selor_intermediate.p12 -nokeys -passin pass:123456
+openssl pkcs12 -in selor_final.p12 -nokeys -passin pass:123456
+openssl pkcs12 -in selor_final_rsa.p12 -nokeys -passin pass:123456
+# Copy-paste and save the certificates to selor_intermediate.pem, selor_final.pem, selor_final_rsa.pem, subca.pem and rootca.pem
+
+# Writing the cert doesn't seem to be possible with the 'softhsm2-util' tool so we use the 'p11tool':
+cd p11tool
+sudo cp iaik/native/linux-x86_64/release/libpkcs11wrapper.so /usr/local/lib/
+mvn package
+./run.sh -writeCert -token selor -pw test123 -id 01 -label intermediate_recruitment -inFile ../selor_intermediate.pem
+./run.sh -writeCert -token selor -pw test123 -id 02 -label final_recruitment -inFile ../selor_final.pem
+./run.sh -writeCert -token selor -pw test123 -id 06 -label final_recruitment_rsa -inFile ../selor_final_rsa.pem
+./run.sh -writeCert -token selor -pw test123 -id 03 -label subca -inFile ../subca.pem
+./run.sh -writeCert -token selor -pw test123 -id 04 -label rootca -inFile ../rootca.pem
+
+# Add the SAD signing cert
+./run.sh -writeCert -token selor -pw test123 -id 05 -label sadsigner -inFile ../selor_SADSigner.pem 
+
+#Test:
+./run.sh -o -token selor -pw test123
+# Expected result:
+# PKCS11 lib "Implementation of PKCS11", from "SoftHSM"
+# 
+Found 12 objects in token selor
+  - private key: ID = 06 , label = final_recruitment_rsa
+  - certificate: ID = 02 , label = final_recruitment
+  - public key: ID = 02 , label = final_recruitment
+  - private key: ID = 01 , label = intermediate_recruitment
+  - certificate: ID = 04 , label = rootca
+  - certificate: ID = 01 , label = intermediate_recruitment
+  - public key: ID = 01 , label = intermediate_recruitment
+  - private key: ID = 02 , label = final_recruitment
+  - certificate: ID = 05 , label = sadsigner
+  - certificate: ID = 06 , label = final_recruitment_rsa
+  - certificate: ID = 03 , label = subca
+  - public key: ID = 06 , label = final_recruitment_rsa
+
+cd ..
