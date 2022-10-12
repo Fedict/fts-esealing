@@ -1,6 +1,6 @@
-package com.zetes.projects.bosa.esealing.client;
+package com.bosa.esealing.client;
 
-import com.zetes.projects.bosa.esealing.dssmodel.*;
+import com.bosa.esealing.dssmodel.*;
 
 /** Little helper class for returning several objects from the Client.getDataToSign() method */
 public class DataToSignInfo {

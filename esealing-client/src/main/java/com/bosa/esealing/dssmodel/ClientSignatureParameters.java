@@ -1,4 +1,4 @@
-package com.zetes.projects.bosa.esealing.dssmodel;
+package com.bosa.esealing.dssmodel;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Date;
 import java.security.cert.Certificate;
 
 /** See https://git-fsf.services.belgium.be/eidas/sign-validation
- *  signingconfigurator/src/main/java/com/zetes/projects/bosa/signingconfigurator/model/ClientSignatureParameters.java */
+ *  signingconfigurator/src/main/java/com/bosa/signingconfigurator/model/ClientSignatureParameters.java */
 public class ClientSignatureParameters {
 
 	public RemoteCertificate signingCertificate;

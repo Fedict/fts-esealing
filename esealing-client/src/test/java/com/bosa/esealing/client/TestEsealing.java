@@ -1,10 +1,9 @@
-package com.zetes.projects.bosa.esealing.client;
+package com.bosa.esealing.client;
 
 import java.io.*;
 import java.net.*;
 import java.util.LinkedHashMap;
 import java.util.Enumeration;
-import javax.xml.bind.DatatypeConverter;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
@@ -14,7 +13,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPrivateKey;
 
-import com.zetes.projects.bosa.esealing.model.*;
+import com.bosa.esealing.model.*;
 
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.ECDSASigner;
@@ -29,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.xml.bind.DatatypeConverter;
 
 public class TestEsealing {
 

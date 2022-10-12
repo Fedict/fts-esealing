@@ -9,10 +9,10 @@ More specifically, we decided to implement the JSON binding for the following 3 
  /signatures/signHash
 For more info, see "BOSA eSealing proposal 5.docx"
 
-The classes in src/main/java/com/zetes/projects/bosa/esealing/model/ are based on the definitions in this standard.
+The classes in src/main/java/com/bosa/esealing/model/ are based on the definitions in this standard.
 As choice for the 'SAD' data, a JWS (signed JSON) containing the hashes to be signed has been chosen.
 
-The actual logic is in src/main/java/com/zetes/projects/bosa/esealing/service.
+The actual logic is in src/main/java/com/bosa/esealing/service.
 It contains a HsmPkcs11.java that goes to an HSM via pkcs11 to access the eSealing keys/certs and to sign with them.
 There is also a HsmSoft.java containing a harcoded keystore, in case no HSM is present.
 

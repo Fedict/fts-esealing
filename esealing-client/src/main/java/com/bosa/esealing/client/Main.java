@@ -1,4 +1,4 @@
-package com.zetes.projects.bosa.esealing.client;
+package com.bosa.esealing.client;
 
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -8,14 +8,12 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.io.ByteArrayInputStream;
 
-import com.zetes.projects.bosa.esealing.model.ListResponse;
-import com.zetes.projects.bosa.esealing.model.InfoResponse;
-import com.zetes.projects.bosa.esealing.model.DsvResponse;
-import com.zetes.projects.bosa.esealing.dssmodel.*;
-import com.zetes.projects.bosa.esealing.model.*;
-
-import javax.xml.bind.DatatypeConverter;
-
+import com.bosa.esealing.model.ListResponse;
+import com.bosa.esealing.model.InfoResponse;
+import com.bosa.esealing.model.DsvResponse;
+import com.bosa.esealing.dssmodel.*;
+import com.bosa.esealing.model.*;
+import jakarta.xml.bind.DatatypeConverter;
 
 /** Command line program to demo the esaling process. <br>
  *  There are 2 services involved: <br>

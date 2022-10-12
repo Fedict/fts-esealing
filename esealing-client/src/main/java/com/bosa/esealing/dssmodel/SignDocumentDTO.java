@@ -1,7 +1,7 @@
-package com.zetes.projects.bosa.esealing.dssmodel;
+package com.bosa.esealing.dssmodel;
 
 /** See https://git-fsf.services.belgium.be/eidas/sign-validation
- *  signandvalidation-ws/src/main/java/com/zetes/projects/bosa/signandvalidation/model/SignDocumentDTO.java */
+ *  signandvalidation-ws/src/main/java/com/bosa/signandvalidation/model/SignDocumentDTO.java */
  public class SignDocumentDTO {
 
 	public RemoteDocument toSignDocument;

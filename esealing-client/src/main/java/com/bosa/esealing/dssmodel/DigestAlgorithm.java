@@ -1,4 +1,4 @@
-package com.zetes.projects.bosa.esealing.dssmodel;
+package com.bosa.esealing.dssmodel;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
