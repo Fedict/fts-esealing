@@ -59,8 +59,8 @@ public class Client {
 	private byte[] lastReq;
 	private byte[] lastResp;
 
-	private static boolean DUMP_REQ = false;
-	private static boolean DUMP_RESP = false;
+	private static boolean DUMP_REQ = true;
+	private static boolean DUMP_RESP = true;
 
 	/** Ctor in case a local DSS library is used instead of the getDataToSign() and signDocument() methods to the BOSA DSS */
 	public Client(String esealUser, char[] eSealPwd, String esealBaseUrl,
@@ -74,16 +74,15 @@ public class Client {
 			String dssBaseUrl) {
 		this.esealUser = esealUser;
 		this.eSealPwd = eSealPwd;
-		String baseUrl = esealBaseUrl + "esealing/";
-		this.listUrl = baseUrl + "credentials/list";
-		this.infoUrl = baseUrl + "credentials/info";
-		this.signHashUrl = baseUrl + "signatures/signHash";
+		this.listUrl = esealBaseUrl + "credentials/list";
+		this.infoUrl = esealBaseUrl + "credentials/info";
+		this.signHashUrl = esealBaseUrl + "signatures/signHash";
 
 		this.sadKeyFile = sadKeyFile;
 		this.sadKeyPwd = sadKeyPwd;
 
-		this.getDtsUrl = dssBaseUrl + "signandvalidation/signing/getDataToSign";
-		this.signDocUrl = dssBaseUrl + "signandvalidation/signing/signDocument";
+		this.getDtsUrl = dssBaseUrl + "signing/getDataToSign";
+		this.signDocUrl = dssBaseUrl + "signing/signDocument";
 	}
 
 	/**

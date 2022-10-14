@@ -1,4 +1,5 @@
 # Install sofhsm2
+# ************** Linux
 sudo apt-get install softhsm2
 # What is installed:
 #  - the pkcs11 lib: /usr/local/lib/softhsm/libsofthsm2.so
@@ -6,10 +7,41 @@ sudo apt-get install softhsm2
 #  - config file: /etc/softhsm2.conf
 #  - the keys that are created/imported: /var/lib/softhsm/tokens/
 
+# ************** Windows
+# Use the .msi installer
+# Logon/logoff or even reboot to make sure the "SOFTHSM2_CONF" is available to the java applications
+# !!!!!!!!!!!!!!!!!!!!!!!!!!! Make sure SOFTHSM2_CONF environment is properly set to the install directory
+
 # Logging:
+# ************** Linux
 sudo nano /etc/softhsm2.conf
    set log.level to DEBUG
    to view the logs: sudo tail -f /var/log/syslog
+# ************** Windows
+   Edit the softhsm2.conf, set log.level to DEBUG
+   to view the logs: start "EventViewer" and check "Windows Logs -> Applications"
+
+
+# Provision the HSM:
+# ************** Windows
+softhsm2-util --init-token --free --label sealing --so-pin sopin --pin 123456
+
+softhsm2-util --import sealing.p8 --token sealing  --label leaf_sealing --id 01
+softhsm2-util --import sealing_sad.p8 --token sealing  --label leaf_sealing_sad --id 02
+
+
+
+Some commands:
+softhsm2-util --init-token --free --label sealing --so-pin sopin --pin 123456
+softhsm2-util --delete-token --token 931413095
+
+
+
+
+
+
+
+# ************** Linux
 # Create a token named 'selor' with PIN = 'test123'
 softhsm2-util --init-token --free --label selor --so-pin sopin123 --pin test123
 

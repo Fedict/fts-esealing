@@ -24,6 +24,11 @@ import jakarta.xml.bind.DatatypeConverter;
  */
 public class Main {
 
+	private static String esealBaseUrl = "https://esealing.ta.fts.bosa.belgium.be:443/esealing/";
+
+	// Connection params for the BOSA DSS service
+	private static String dssBaseUrl = "http://validate.ta.fts.bosa.belgium.be:443/signandvalidation/";
+
 	public static void usage(String msg) {
 		if (null != msg)
 			System.out.println(msg);
@@ -44,20 +49,19 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 
+		esealBaseUrl = "http://localhost:8752/";
+		dssBaseUrl = "http://localhost:8751/";
+
 		byte[] xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<note>\n  <mesg>Hello World</mesg>\n</note>".getBytes();
 		String PROFILE_NAME = "XADES_1";
 
 		// Connection params for the esealing TSP
 		String esealUser = "selor";
 		char[] eSealPwd = "test123".toCharArray();
-		String esealHost = "esealing.ta.fts.bosa.belgium.be";
-		int esealPort = 443;
-		String keyFile = "src/test/resources/selor_SADSigner.p12";
+		String keyFile = "esealing-client/src/test/resources/selor_SADSigner.p12";
+//		keyFile = "esealing-client/src/test/resources/citizen_nonrep.p12";
 		char[] keyPwd = "123456".toCharArray();
 
-		// Connection params for the BOSA DSS service
-		String dssHost =  "validate.ta.fts.bosa.belgium.be";
-		int dssPort = 443;
 
 		// Which key on the esealing TSP to use
 		String credentialID = null;
@@ -74,18 +78,14 @@ public class Main {
 				esealUser = args[i + 1];
 			else if (c.equals("-p"))
 				eSealPwd = args[i + 1].toCharArray();
-			else if (c.equals("-eh"))
-				esealHost = args[i + 1];
-			else if (c.equals("-ep"))
-				esealPort = Integer.parseInt(args[i + 1]);
+			else if (c.equals("-eu"))
+				esealBaseUrl = args[i + 1];
 			else if (c.equals("-kf"))
 				keyFile = args[i + 1];
 			else if (c.equals("-kp"))
 				keyPwd = args[i + 1].toCharArray();
-			else if (c.equals("-dh"))
-				dssHost = args[i + 1];
-			else if (c.equals("-dp"))
-				dssPort = Integer.parseInt(args[i + 1]);
+			else if (c.equals("-du"))
+				dssBaseUrl = args[i + 1];
 			else {
 				usage("Unknown parameter '" + c + "'");
 				return;
@@ -99,8 +99,6 @@ public class Main {
 			}
 		});
 
-		String esealBaseUrl = "https://" + esealHost + ":" + esealPort + "/";
-		String dssBaseUrl = "https://" + dssHost + ":" + dssPort + "/";
 		Client client = new Client(esealUser, eSealPwd, esealBaseUrl, keyFile, keyPwd, dssBaseUrl);
 
 		// 1. To the esealing service: list credentials (optional)

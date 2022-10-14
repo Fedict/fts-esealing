@@ -22,13 +22,13 @@ import org.slf4j.LoggerFactory;
  * Only supports EC keys, no RSA keys.
  * A PKCS12 keystore is harcoded (at the end of the file), containing 2 secp384r1 keys.
  */
-class HsmSoft extends Hsm {
+class StubHsm extends Hsm {
 	private static final String POLICY = "Just for testing (software keys), pretty insecure";
 	private static final String SIG_POLICY_ID = "Test signatures in software (no HSM)";
 
-	private static final Logger LOG = LoggerFactory.getLogger(HsmSoft.class);
+	private static final Logger LOG = LoggerFactory.getLogger(StubHsm.class);
 
-	protected HsmSoft() throws ESealException {
+	protected StubHsm() throws ESealException {
 	}
 
 	public ListResponse getCredentialsList(String userName, char[] userPwd, String certificates) throws ESealException {

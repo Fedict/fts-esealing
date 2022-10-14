@@ -1,11 +1,13 @@
 package com.bosa.esealing;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.io.ByteArrayInputStream;
 import java.security.Signature;
 import java.security.MessageDigest;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Properties;
 
 import com.bosa.esealing.service.GenDer;
 import jakarta.xml.bind.DatatypeConverter;
@@ -28,8 +30,6 @@ import iaik.pkcs.pkcs11.objects.ByteArrayAttribute;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 
 public class TestPkcs11 {
-	public static String PKCS11_PATH = "/usr/local/lib/softhsm/libsofthsm2.so";
-
 	public static void main(String[] args) throws Exception {
 		String tokenLabel = null;
 		String tokenPin = null;
@@ -45,7 +45,12 @@ public class TestPkcs11 {
 			return;
 		}
 
-		Module module = Module.getInstance(PKCS11_PATH);
+		String libLocation = System.getenv("SOFTHSM2_CONF");
+		if (libLocation == null) throw new IOException("SOFTHSM2_CONF not set !!!!");
+		libLocation = libLocation.replaceFirst("etc\\\\.*$", "") +
+				(System.getProperty("os.name").toLowerCase().contains("win") ? "lib\\softhsm2-x64.dll" : "lib\\libsofthsm2.so");
+		System.out.println("Loading PKCS11 Library from system property 'SOFTHSM2_CONF' : " + libLocation);
+		Module module = Module.getInstance(libLocation);
 
 		module.initialize(null);
 

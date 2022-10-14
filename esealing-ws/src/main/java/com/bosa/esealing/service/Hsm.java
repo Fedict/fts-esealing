@@ -39,7 +39,7 @@ abstract class Hsm {
 			catch (Exception e) {
 				LOG.error("getHsm(): HsmPkcs11 instantiantion failed: " + e.toString(), e);
 				if (ALLOW_HSM_SOFT)
-					hsm = new HsmSoft();
+					hsm = new StubHsm();
 				else
 					throw new ESealException(500, "HSM not available", e.getMessage());
 			}

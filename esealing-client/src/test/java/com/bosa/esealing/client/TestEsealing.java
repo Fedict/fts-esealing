@@ -34,8 +34,8 @@ public class TestEsealing {
 
 	public static String USERNAME = "selor";
 	public static char[] PASSWD = "test123".toCharArray();
-	//public static String BASE_URL = "http://localhost:8080/";
-	public static String BASE_URL = "https://esealing.ta.fts.bosa.belgium.be/";
+	public static String BASE_URL = "http://localhost:8752/";
+	//public static String BASE_URL = "https://esealing.ta.fts.bosa.belgium.be/";
 
 	public static String HASH_ALGO = "SHA-384";
 	public static String HASH_OID = "2.16.840.1.101.3.4.2.2";
