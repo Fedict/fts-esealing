@@ -1,0 +1,58 @@
+# Install sofhsm2
+# Use the .msi installer
+# Logon/logoff or even reboot to make sure the "SOFTHSM2_CONF" is available to the java applications... Trust me :-)
+# !!!!! Make sure SOFTHSM2_CONF environment is properly set to the install directory
+
+# Logging:
+#Edit the softhsm2.conf, set log.level to DEBUG
+#to view the logs: start "EventViewer" and check "Windows Logs -> Applications"
+
+# Provision the HSM:
+"c:\SOFTHSM2\bin\softhsm2-util.exe" --delete-token --token sealing
+"c:\SOFTHSM2\bin\softhsm2-util.exe" --init-token --free --label sealing --so-pin sopin --pin 123456
+"c:\SOFTHSM2\bin\softhsm2-util.exe" --import sealing.p8 --token sealing  --label leaf_sealing --id 01 --pin 123456
+"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -l --id 01 --label leaf_sealing -y cert -w sealing.pem --pin 123456
+"c:\SOFTHSM2\bin\softhsm2-util.exe" --import sealing_sad.p8 --token sealing  --label leaf_sealing_sad --id 02 --pin 123456
+"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -l --id 02 --label leaf_sealing_sad -y cert -w sealing_sad.pem --pin 123456
+"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -l --id 03 --label root -y cert -w root.pem --pin 123456
+"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -l --id 04 --label issuing -y cert -w issuing.pem --pin 123456
+
+"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -O
+Using slot 0 with a present token (0x13e1899f)
+Certificate Object; type = X.509 cert
+  label:      issuing
+  subject:    DN: CN=TestSign CitizenCA/serialNumber=202207, O=Belgian Government, C=BE
+  ID:         04
+Certificate Object; type = X.509 cert
+  label:      leaf_sealing_sad
+  subject:    DN: CN=SAD Leaf Sealing Signer, OU=Sealing, O=fgov, C=BE
+  ID:         02
+Public Key Object; EC  EC_POINT 384 bits
+  EC_POINT:   046104e9b1c3192958ebd1a8b781f518ae3a4e68e456184da73a129d8cfdafcf545b6496c5a3b312997361ecd43d76de8c70b91e8d5d2446d1beed9e3230e85a09d75732a31cfcd00ae30165c41e6d6fdeded69628a824e0d2b4d30acc00b84f7c86a1
+  EC_PARAMS:  06052b81040022
+  label:      leaf_sealing_sad
+  ID:         02
+  Usage:      verify
+  Access:     none
+Certificate Object; type = X.509 cert
+  label:      root
+  subject:    DN: C=BE, CN=TestSign Belgium Root UT CA7
+  ID:         03
+Public Key Object; EC  EC_POINT 384 bits
+  EC_POINT:   04610463df085785486c14f68554776ddd30c3a5c760ec427b45e626c3b8499288b9c662cde944ddf69d3121460be2f2c8200845812c456355978bd2919322190487d45a15f68d68170c7b933b3be0ecde870025385b6495b93d11656470812c3e9ddc
+  EC_PARAMS:  06052b81040022
+  label:      leaf_sealing
+  ID:         01
+  Usage:      verify
+  Access:     none
+Certificate Object; type = X.509 cert
+  label:      leaf_sealing
+  subject:    DN: CN=Leaf Sealing Signer, OU=Sealing, O=fgov, C=BE
+  ID:         01
+
+
+
+Some commands:
+c:\SOFTHSM2\bin\softhsm2-util.exe --show-slots
+
+

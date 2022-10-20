@@ -56,12 +56,11 @@ public class Main {
 		String PROFILE_NAME = "XADES_1";
 
 		// Connection params for the esealing TSP
-		String esealUser = "selor";
-		char[] eSealPwd = "test123".toCharArray();
-		String keyFile = "esealing-client/src/test/resources/selor_SADSigner.p12";
-//		keyFile = "esealing-client/src/test/resources/citizen_nonrep.p12";
-		char[] keyPwd = "123456".toCharArray();
+		String esealUser = "sealing";
+		char[] eSealPwd = "123456".toCharArray();
 
+		String keyFile = "esealing-client/src/test/resources/sealing_sad.p12";
+		char[] keyPwd = "123456".toCharArray();
 
 		// Which key on the esealing TSP to use
 		String credentialID = null;
@@ -131,6 +130,8 @@ public class Main {
 		// 5. To the BOSA DSS service: sign document
 		//  ***   Note: toSignDocument, clientSignatureParameters and profileName _must_ be    ***
 		//  ***   the same as in the previous call (in step 3)                                 ***
+
+		dataToSignInfo.clientSignatureParameters.signingDate = dtsDto.getSigningDate();
 		byte[] sigValue = DatatypeConverter.parseBase64Binary(dsvResp.getSignatures()[0]);
 		RemoteDocument signedDoc2 = client.signDocument(dataToSignInfo.toSignDocument,
 			dataToSignInfo.clientSignatureParameters, dataToSignInfo.profileName, sigValue);
