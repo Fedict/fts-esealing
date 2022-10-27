@@ -17,7 +17,7 @@
 "C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -l --id 03 --label root -y cert -w root.pem --pin 123456
 "C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -l --id 04 --label issuing -y cert -w issuing.pem --pin 123456
 
-"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -O
+"C:\Program Files\OpenSC Project\OpenSC\tools\pkcs11-tool.exe" --module C:\SoftHsm2\lib\softhsm2-x64.dll -O --token sealing
 Using slot 0 with a present token (0x13e1899f)
 Certificate Object; type = X.509 cert
   label:      issuing
