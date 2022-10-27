@@ -7,7 +7,6 @@ import java.security.Signature;
 import java.security.MessageDigest;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Properties;
 
 import com.bosa.esealing.service.GenDer;
 import jakarta.xml.bind.DatatypeConverter;
@@ -45,11 +44,12 @@ public class TestPkcs11 {
 			return;
 		}
 
-		String libLocation = System.getenv("SOFTHSM2_CONF");
-		if (libLocation == null) throw new IOException("SOFTHSM2_CONF not set !!!!");
+		String libLocationName = "SOFTHSM2_CONF";
+		String libLocation = System.getenv(libLocationName);
+		if (libLocation == null) throw new IOException(libLocationName + " not set !!!!");
 		libLocation = libLocation.replaceFirst("etc\\\\.*$", "") +
 				(System.getProperty("os.name").toLowerCase().contains("win") ? "lib\\softhsm2-x64.dll" : "lib\\libsofthsm2.so");
-		System.out.println("Loading PKCS11 Library from system property 'SOFTHSM2_CONF' : " + libLocation);
+		System.out.println("Loading PKCS11 Library from system property '" + libLocationName + "' : " + libLocation);
 		Module module = Module.getInstance(libLocation);
 
 		module.initialize(null);
