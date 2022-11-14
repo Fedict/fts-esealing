@@ -59,7 +59,7 @@ public class Main {
 		String esealUser = "sealing";
 		char[] eSealPwd = "123456".toCharArray();
 
-		String keyFile = "esealing-client/src/test/resources/sealing_sad.p12";
+		String keyFile = "SetupHSM/sealing_sad.p12";
 		char[] keyPwd = "123456".toCharArray();
 
 		// Which key on the esealing TSP to use

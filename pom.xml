@@ -22,10 +22,25 @@
     </modules>
 
     <properties>
-        <java.version>1.8</java.version>
         <springdoc.version>1.6.11</springdoc.version>
         <httpclient.version>4.5.11</httpclient.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
     <dependencyManagement>
         <dependencies>

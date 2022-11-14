@@ -34,6 +34,7 @@ abstract class Hsm {
 	public static Hsm getHsm() throws ESealException {
 		if (null == hsm) {
 			try {
+//				hsm = new StubHsm();
 				hsm = new HsmPkcs11();
 			}
 			catch (Exception e) {
