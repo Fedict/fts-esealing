@@ -24,6 +24,8 @@ import jakarta.xml.bind.DatatypeConverter;
  */
 public class Main {
 
+	private static final String SAD_KEY_FILE = "SetupHSM/sealing_sad.p12";
+
 	private static String esealBaseUrl = "https://esealing.ta.fts.bosa.belgium.be:443/esealing/";
 
 	// Connection params for the BOSA DSS service
@@ -41,7 +43,7 @@ public class Main {
 		System.out.println("  -p   : eseal password (default: test123)");
 		System.out.println("  -eh  : eseal hostname (default: localhost)");
 		System.out.println("  -ep  : eseal port (default: 8080)");
-		System.out.println("  -kf  : SAD keyfile (default: src/test/resources/selor_SADSigner.p12)");
+		System.out.println("  -kf  : SAD keyfile (default: " + SAD_KEY_FILE + ")");
 		System.out.println("  -kp  : SAD password (default: 123456)");
 		System.out.println("  -dh  : BOSA DSS hostname (default: localhost)");
 		System.out.println("  -dp  : BOSA DSS port (default: 8080)");
@@ -59,7 +61,7 @@ public class Main {
 		String esealUser = "sealing";
 		char[] eSealPwd = "123456".toCharArray();
 
-		String keyFile = "SetupHSM/sealing_sad.p12";
+		String keyFile = SAD_KEY_FILE;
 		char[] keyPwd = "123456".toCharArray();
 
 		// Which key on the esealing TSP to use

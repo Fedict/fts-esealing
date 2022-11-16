@@ -32,15 +32,15 @@ import jakarta.xml.bind.DatatypeConverter;
 
 public class TestEsealing {
 
-	public static String USERNAME = "selor";
-	public static char[] PASSWD = "test123".toCharArray();
+	public static String USERNAME = "sealing";
+	public static char[] PASSWD = "123456".toCharArray();
 	public static String BASE_URL = "http://localhost:8752/";
 	//public static String BASE_URL = "https://esealing.ta.fts.bosa.belgium.be/";
 
 	public static String HASH_ALGO = "SHA-384";
 	public static String HASH_OID = "2.16.840.1.101.3.4.2.2";
 
-	public static String KEYFILE = "src/test/resources/selor_SADSigner.p12";
+	public static String KEYFILE = "SetupHSM/sealing_sad.p12";
 	public static char[] KEYPWD = "123456".toCharArray();
 
 	public static String XML1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<sample>\nhello1\n</sample>\n";
