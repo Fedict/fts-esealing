@@ -4,41 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.bosa</groupId>
-	<artifactId>bosa-esealdemoclient</artifactId>
+	<artifactId>esealdemoclient</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Bosa: E-sealing demo application</name>
 
 	<properties>
-		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>9</maven.compiler.source>
+		<maven.compiler.target>9</maven.compiler.target>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
-
-	<build>
-		<plugins>
-			<!-- Copy all dependencies (jar files) to target/lib -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.2</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<excludeArtifactIds>junit</excludeArtifactIds>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>

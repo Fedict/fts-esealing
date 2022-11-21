@@ -15,16 +15,16 @@
     <packaging>pom</packaging>
     <name>Bosa: E-sealing</name>
 
-    <modules>
-        <module>esealing-ws</module>
-        <module>esealing-client</module>
-        <module>esealing-model</module>
-    </modules>
-
     <properties>
         <springdoc.version>1.6.11</springdoc.version>
         <httpclient.version>4.5.11</httpclient.version>
     </properties>
+
+    <modules>
+        <module>esealing-ws</module>
+        <module>esealing-model</module>
+        <module>esealing-client</module>
+    </modules>
 
     <build>
         <plugins>

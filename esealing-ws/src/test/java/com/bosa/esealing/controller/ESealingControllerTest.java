@@ -2,6 +2,7 @@ package com.bosa.esealing.controller;
 
 import com.bosa.esealing.ESealingTestBase;
 import com.bosa.esealing.model.*;
+import com.bosa.esealing.service.SadUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -54,7 +55,7 @@ public class ESealingControllerTest extends ESealingTestBase {
 	String certs = "none";
 	ListRequest listRequest = new ListRequest(requestId, lang, certs, certInfo, authInfo, profile, signerIdentity);
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("selor", "test123");
+        headers.setBasicAuth("sealing", "123456");
         HttpEntity<ListRequest> request = new HttpEntity<>(listRequest, headers);
 
         // when
@@ -72,12 +73,12 @@ public class ESealingControllerTest extends ESealingTestBase {
 	Boolean certInfo = true;
 	Boolean authInfo = true;
 	String profile = "http://uri.etsi.org/19432/v1.1.1/credentialinfoprotocol#";
-	String credentialID = "intermediate_recruitment";
+	String credentialID = "interm_sealing";
 	String lang = "en";
 	String certs = "chain";
 	InfoRequest infoRequest = new InfoRequest(requestId, credentialID, lang, certs, certInfo, authInfo, profile);
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("selor", "test123");
+        headers.setBasicAuth("sealing", "123456");
         HttpEntity<InfoRequest> request = new HttpEntity<>(infoRequest, headers);
 
         // when
@@ -95,7 +96,7 @@ public class ESealingControllerTest extends ESealingTestBase {
 	String operationMode = "S";
 	String requestId = "1159445535673610071799690907";
 	String lang = "en";
-	String credentialID = "final_recruitment";
+	String credentialID = "final_sealing";
 	OptionalData optionalData = new OptionalData(true, true, true, true, true, true);
 	Integer validity_period = null;
 	Integer numSignatures = new Integer(1);
@@ -110,12 +111,12 @@ public class ESealingControllerTest extends ESealingTestBase {
 		"TF7cQNdjOBTH5v4RoaX7hf5A7/GpmfP51bFi3EfgxFj92stT1h6rnI88OJTaIEhM",
 	};
 	Digest documentDigests = new Digest(digestsB64, digestOID);
-	String SAD = "eyJraWQiOiJmNWU4Mjg0YTJiNWM5YTVhZmUxNGQ1NzJmZTEzZThmNiIsImFsZyI6IkVTMzg0In0.eyJoYXNoZXMiOlsiNW55UndDWVlaTzdLWHU4UnBMZ09BeWI5U0ErcE5jdnJGY3lZUTFWb2hKRXBQbHJhOXBzeVVtMVdxSUo4MjZhMCIsIlRGN2NRTmRqT0JUSDV2NFJvYVg3aGY1QTcvR3BtZlA1MWJGaTNFZmd4Rmo5MnN0VDFoNnJuSTg4T0pUYUlFaE0iXSwiaGFzaEFsZ29yaXRobU9JRCI6IjIuMTYuODQwLjEuMTAxLjMuNC4yLjIifQ._KPbpaLOjc_4xrmZMVgv2hbHNIt2r_nhW58ecmoaoj8fSn7FhFnVfp43Up7KCswxLXez9fxjVrLujVbqFlPdvqiqp1ED3q9aVBBeQ4yBkSmkIzWcwQpIGQLZ2TpMkZ10";
+	String SAD = SadUtil.makeSAD(documentDigests);
 	DsvRequest dsvRequest = new DsvRequest(operationMode, requestId, SAD, optionalData, validity_period,
 		credentialID, lang, numSignatures, policy, signaturePolicyID, signOID, signAlgoParams, response_uri, documentDigests);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("selor", "test123");
+        headers.setBasicAuth("sealing", "123456");
         HttpEntity<DsvRequest> request = new HttpEntity<>(dsvRequest, headers);
 
         // when
