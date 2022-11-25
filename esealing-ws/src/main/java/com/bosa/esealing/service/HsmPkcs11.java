@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory;
  * be used to verify the SAD data (see SADChecker.java)
  */
 class HsmPkcs11 extends Hsm {
+	public static String DOCKER_PKCS11_PATH = "/usr/lib/softhsm/libsofthsm2.so";
+
 	private static Module module;
 
 	private static HashMap<String, HsmTokenInfo> tokens = new HashMap<String, HsmTokenInfo>(20);
@@ -60,12 +62,18 @@ class HsmPkcs11 extends Hsm {
 	private static final String SIG_POLICY_ID = "Test signatures on (soft) HSM";
 
 	protected HsmPkcs11() throws Exception {
-		String libLocationName = "SOFTHSM2_CONF";
-		String libLocation = System.getenv(libLocationName);
-		if (libLocation == null) throw new IOException(libLocationName + " not set !!!!");
-		libLocation = libLocation.replaceFirst("etc\\\\.*$", "") +
-				(System.getProperty("os.name").toLowerCase().contains("win") ? "lib\\softhsm2-x64.dll" : "lib\\libsofthsm2.so");
-		LOG.debug("Loading PKCS11 Library from system property '" + libLocationName + "' : " + libLocation);
+
+		String libLocation;
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			String libLocationName = "SOFTHSM2_CONF";
+			libLocation = System.getenv(libLocationName);
+			if (libLocation == null) throw new IOException(libLocationName + " not set !!!!");
+			libLocation = libLocation.replaceFirst("etc\\\\.*$", "") + "lib\\softhsm2-x64.dll";
+			LOG.debug("Loading PKCS11 Library from system property '" + libLocationName + "' : " + libLocation);
+		} else {
+			libLocation = DOCKER_PKCS11_PATH;
+		}
+		LOG.debug("Loading PKCS11 Library from  '" + libLocation + "'");
 		module = Module.getInstance(libLocation);
 
 		module.initialize(null);
