@@ -11,7 +11,10 @@ RUN mkdir -p /usr/local/tomcat/conf \
     && chmod -R 777 /tmp/ \
     && apt-get update && apt-get -y install softhsm2 opensc && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN echo 'JAVA_OPTS="$JAVA_OPTS --add-exports=jdk.crypto.cryptoki/sun.security.pkcs11.wrapper=ALL-UNNAMED -Dsignvalidation.url=$SIGNING_URL -Dpkcs11.hsm_module=$HSM_MODULE -Dpkcs11.hsm_slot=$HSM_SLOT -Dpkcs11.hsm_user_pin=$HSM_USER_PIN -Dpkcs11.hsm_key_id=$HSM_KEY_ID -Didp.url=$IDP_URL -Dfas.certificate_filename=$FAS_CERTIFICATE_FILENAME -Dfas.client_id=$FAS_CLIENT_ID -Dcors.allowedorigins=$CORS_ALLOWED_ORIGINS"' > /usr/local/tomcat/bin/setenv.sh
+
+# For >= JDK17 add to JAVA_OPTS : --add-exports=jdk.crypto.cryptoki/sun.security.pkcs11.wrapper=ALL-UNNAMED \
+
+RUN echo 'JAVA_OPTS="$JAVA_OPTS -Dsignvalidation.url=$SIGNING_URL -Dpkcs11.hsm_module=$HSM_MODULE -Dpkcs11.hsm_slot=$HSM_SLOT -Dpkcs11.hsm_user_pin=$HSM_USER_PIN -Dpkcs11.hsm_key_id=$HSM_KEY_ID -Didp.url=$IDP_URL -Dfas.certificate_filename=$FAS_CERTIFICATE_FILENAME -Dfas.client_id=$FAS_CLIENT_ID -Dcors.allowedorigins=$CORS_ALLOWED_ORIGINS"' > /usr/local/tomcat/bin/setenv.sh
 
 ADD ./esealing-ws/target/*.war /usr/local/tomcat/webapps/esealing.war
 RUN chmod o+rx /var/lib/softhsm && chmod o+rx /var/lib/softhsm/tokens && chmod o+rx /etc/softhsm && chmod -R o+r /etc/softhsm

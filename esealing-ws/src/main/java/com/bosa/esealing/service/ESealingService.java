@@ -1,10 +1,9 @@
 package com.bosa.esealing.service;
 
-import jakarta.xml.bind.DatatypeConverter;
-
 import com.bosa.esealing.exception.ESealException;
 import com.bosa.esealing.model.*;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -49,7 +48,7 @@ public class ESealingService {
 		int idx = authorization.indexOf("Basic ") + "Basic ".length();
 		authorization = authorization.substring(idx);
 
-		authorization = new String (DatatypeConverter.parseBase64Binary(authorization));
+		authorization = new String (Base64.decodeBase64(authorization));
 
 		String[] parts = authorization.split(":"); // parts[0] = username, parts[1] = passwd
 		if (parts.length != 2)

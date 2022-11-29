@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
-import jakarta.xml.bind.DatatypeConverter;
 
 import com.bosa.esealing.exception.ESealException;
 import com.bosa.esealing.model.*;
@@ -32,6 +31,8 @@ import iaik.pkcs.pkcs11.objects.BooleanAttribute;
 import iaik.pkcs.pkcs11.objects.Attribute;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 
+import org.apache.tomcat.util.buf.HexUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,9 +139,9 @@ class HsmPkcs11 extends Hsm {
 			String[] sigs = new String[hashes.length];
 
 			for (int i = 0; i < hashes.length; i++) {
-				byte[] hash = DatatypeConverter.parseBase64Binary(hashes[i]);
+				byte[] hash = Base64.decodeBase64(hashes[i]);
 				byte[] sig = doSign(hsmTokenInfo.session, privKey, hash);
-				sigs[i] = DatatypeConverter.printBase64Binary(sig);
+				sigs[i] = Base64.encodeBase64String(sig);
 			}
 
 			return makeDsvResponse(optionalData, hsmKeyInfo.chain, sigs, POLICY, SIG_POLICY_ID);
@@ -305,7 +306,7 @@ class HsmPkcs11 extends Hsm {
 
 					HsmKeyInfo hsmKeyInfo = makeHsmKeyInfo(privKey, cert, certMap, certs);
 					LOG.info("  - Created key info with ID = "
-						+ DatatypeConverter.printHexBinary(privKey.getId().getByteArrayValue())
+						+ HexUtils.toHexString(privKey.getId().getByteArrayValue())
 						+ " and label = " + label);
 
 					ret.put(label, hsmKeyInfo);
@@ -385,7 +386,7 @@ class HsmPkcs11 extends Hsm {
 
 	private byte[] doSign(Session session, PrivateKey privKey, byte[] hashVal) throws Exception {
 		if (privKey instanceof ECPrivateKey) {
-			LOG.info("Making EC signature, key ID = " + DatatypeConverter.printHexBinary(privKey.getId().getByteArrayValue()));
+			LOG.info("Making EC signature, key ID = " + HexUtils.toHexString(privKey.getId().getByteArrayValue()));
 			ECPrivateKey ecKey = (ECPrivateKey) privKey;
 
 			session.signInit(new Mechanism(PKCS11Constants.CKM_ECDSA), ecKey);

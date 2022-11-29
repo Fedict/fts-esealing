@@ -7,11 +7,11 @@ import java.security.interfaces.ECKey;
 import java.security.interfaces.RSAPublicKey;
 
 import java.text.SimpleDateFormat;
-import jakarta.xml.bind.DatatypeConverter;
 
 import com.bosa.esealing.exception.ESealException;
 import com.bosa.esealing.model.*;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ abstract class Hsm {
 		int len = "chain".equals(certificates) ? chain.length : 1;
 		StringBuilder ret = new StringBuilder(10000);
 		for (int j = 0; j < len; j++) {
-			String b64 = DatatypeConverter.printBase64Binary(chain[j].getEncoded());
+			String b64 = Base64.encodeBase64String(chain[j].getEncoded());
 			int b64Len = b64.length();
 			ret.append("-----BEGIN CERTIFICATE-----\n");
 			for (int i = 0; i < b64Len; i += 64) {
@@ -103,7 +103,7 @@ abstract class Hsm {
 			int len = "chain".equals(returnCerts) ? chain.length : 1;
 			certificates = new String[len];
 			for (int i = 0; i < len; i++)
-				certificates[i] = DatatypeConverter.printBase64Binary(chain[i].getEncoded());
+				certificates[i] = Base64.encodeBase64String(chain[i].getEncoded());
 		}
 
 		String validFrom = sdf.format(signingCert.getNotBefore());

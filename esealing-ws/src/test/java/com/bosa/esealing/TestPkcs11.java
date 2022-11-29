@@ -7,10 +7,8 @@ import java.security.Signature;
 import java.security.MessageDigest;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Properties;
 
 import com.bosa.esealing.service.GenDer;
-import jakarta.xml.bind.DatatypeConverter;
 
 import iaik.pkcs.pkcs11.Module;
 import iaik.pkcs.pkcs11.Slot;
@@ -28,6 +26,7 @@ import iaik.pkcs.pkcs11.objects.RSAPrivateKey;
 import iaik.pkcs.pkcs11.objects.X509PublicKeyCertificate;
 import iaik.pkcs.pkcs11.objects.ByteArrayAttribute;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
+import org.apache.tomcat.util.buf.HexUtils;
 
 public class TestPkcs11 {
 	public static void main(String[] args) throws Exception {
@@ -181,7 +180,7 @@ public class TestPkcs11 {
 
 	private static void checkSig(byte[] tbs, byte[] sigVal, String algo, X509Certificate cert) {
 		try {
-			System.out.println("  sig: " + DatatypeConverter.printHexBinary(sigVal));
+			System.out.println("  sig: " + HexUtils.toHexString(sigVal));
 
 			Signature signat = Signature.getInstance(algo);
 			signat.initVerify(cert.getPublicKey());
@@ -197,9 +196,9 @@ public class TestPkcs11 {
 	private static void dumpObj(PKCS11Object obj) throws Exception {
 		String id = null;
 		if (obj instanceof Key)
-			id = DatatypeConverter.printHexBinary(((Key) obj).getId().getByteArrayValue());
+			id = HexUtils.toHexString(((Key) obj).getId().getByteArrayValue());
 		if (obj instanceof X509PublicKeyCertificate)
-			id = DatatypeConverter.printHexBinary(((X509PublicKeyCertificate) obj).getId().getByteArrayValue());
+			id = HexUtils.toHexString(((X509PublicKeyCertificate) obj).getId().getByteArrayValue());
 		
 		System.out.println(" - " + obj.getClass() + ", ID: " + id + ", label: " + ((Storage) obj).getLabel());
 	}

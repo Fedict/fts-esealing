@@ -1,8 +1,11 @@
 package com.bosa.esealing.service;
 
-import jakarta.xml.bind.DatatypeConverter;
+import org.apache.tomcat.util.buf.HexUtils;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestGenDer {
@@ -39,13 +42,13 @@ public class TestGenDer {
 	}
 
 	private static String bin2hex(byte[] ba) {
-		return DatatypeConverter.printHexBinary(ba);
+		return HexUtils.toHexString(ba).toUpperCase(Locale.ROOT);
 	}
 
 	private static String bin2hex(byte[] ba, int off, int len) {
 		byte[] tmp = new byte[len];
 		System.arraycopy(ba, off, tmp, 0, len);
-		return DatatypeConverter.printHexBinary(tmp);
+		return HexUtils.toHexString(tmp).toUpperCase(Locale.ROOT);
 	}
 }
 

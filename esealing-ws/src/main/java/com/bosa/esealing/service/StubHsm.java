@@ -9,11 +9,10 @@ import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import jakarta.xml.bind.DatatypeConverter;
-
 import com.bosa.esealing.exception.ESealException;
 import com.bosa.esealing.model.*;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,8 +100,8 @@ class StubHsm extends Hsm {
 			String[] sigs = new String[hashes.length];
 			for (int i = 0; i < sigs.length; i++) {
 				signature.initSign(privKey);
-				signature.update(DatatypeConverter.parseBase64Binary(hashes[i]));
-				sigs[i] = DatatypeConverter.printBase64Binary(signature.sign());
+				signature.update(Base64.decodeBase64(hashes[i]));
+				sigs[i] = Base64.encodeBase64String(signature.sign());
 			}
 
 			return makeDsvResponse(optionalData, chain, sigs, POLICY, SIG_POLICY_ID);
