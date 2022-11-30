@@ -8,6 +8,7 @@
 #to view the logs: start "EventViewer" and check "Windows Logs -> Applications"
 
 # Provision the HSM with "testpki" keys:
+"c:\SOFTHSM2\bin\softhsm2-util.exe" --delete-token --token idp
 "c:\SOFTHSM2\bin\softhsm2-util.exe" --delete-token --token sealing
 "c:\SOFTHSM2\bin\softhsm2-util.exe" --init-token --free --label sealing --so-pin sopin --pin 123456
 "c:\SOFTHSM2\bin\softhsm2-util.exe" --import final_sealing.p8 --token sealing  --label final_sealing --id 01 --pin 123456
