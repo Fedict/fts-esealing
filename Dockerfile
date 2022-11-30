@@ -1,7 +1,7 @@
 # To change this license header, choose License Headers in Project Properties.
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
-FROM tomcat:9.0.69-jre17-temurin-jammy
+FROM tomcat:9.0.69-jdk17-temurin-jammy
 USER root
 RUN  mkdir -p /usr/local/tomcat/conf \
     && chown -R 1001:root  /usr/local/tomcat/conf \
