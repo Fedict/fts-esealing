@@ -17,7 +17,7 @@
 
     <properties>
         <springdoc.version>1.6.11</springdoc.version>
-        <httpclient.version>4.5.11</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
     </properties>
 
     <modules>
@@ -41,6 +41,7 @@
         </plugins>
     </build>
 
+
     <dependencyManagement>
         <dependencies>
             <!-- Swagger -->
@@ -48,6 +49,13 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+            <!-- For 401 testing using restTemplate -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
