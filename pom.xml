@@ -41,7 +41,6 @@
         </plugins>
     </build>
 
-
     <dependencyManagement>
         <dependencies>
             <!-- Swagger -->
@@ -49,13 +48,6 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc.version}</version>
-            </dependency>
-
-            <!-- For 401 testing using restTemplate -->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
