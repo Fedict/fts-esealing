@@ -3,6 +3,8 @@
 # Logon/logoff or even reboot to make sure the "SOFTHSM2_CONF" is available to the java applications... Trust me :-)
 # !!!!! Make sure SOFTHSM2_CONF environment is properly set to the install directory
 
+#Install open SC tools : https://github.com/OpenSC/OpenSC/releases/tag/0.23.0
+
 # Logging:
 #Edit the softhsm2.conf, set log.level to DEBUG
 #to view the logs: start "EventViewer" and check "Windows Logs -> Applications"
