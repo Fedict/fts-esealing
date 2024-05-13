@@ -5,39 +5,50 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.6.9</version>
         <relativePath/>
     </parent>
 
-    <groupId>com.zetes.projects.bosa</groupId>
+    <groupId>com.bosa</groupId>
     <artifactId>esealing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Bosa: E-sealing</name>
 
+    <properties>
+        <springdoc.version>1.6.11</springdoc.version>
+        <httpclient.version>4.5.13</httpclient.version>
+    </properties>
+
     <modules>
         <module>esealing-ws</module>
+        <module>esealing-model</module>
         <module>esealing-client</module>
     </modules>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <springfox.version>2.9.2</springfox.version>
-        <httpclient.version>4.5.11</httpclient.version>
-    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
     <dependencyManagement>
         <dependencies>
             <!-- Swagger -->
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
 
             <!-- For 401 testing using restTemplate -->

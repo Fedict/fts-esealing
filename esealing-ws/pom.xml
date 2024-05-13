@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.zetes.projects.bosa</groupId>
+        <groupId>com.bosa</groupId>
         <artifactId>esealing</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -13,15 +13,27 @@
     <name>Bosa: esealing-ws</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.bosa</groupId>
+            <artifactId>esealing-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,12 +49,21 @@
 
         <!-- Swagger -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.32</version>
         </dependency>
+
+        <!-- Swagger -> springdoc -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- For 401 testing using restTemplate -->
@@ -53,18 +74,40 @@
 
         <!-- For making/verifying JWTs -->
         <dependency>
-          <groupId>com.nimbusds</groupId>
-          <artifactId>nimbus-jose-jwt</artifactId>
-          <version>7.1</version>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>8.19</version>
         </dependency>
 
-	<!-- IAIK sunpkcs11-wrapper, to access an HSM -->
-	<dependency>
-		<groupId>org.xipki.iaik</groupId>
-		<artifactId>sunpkcs11-wrapper</artifactId>
-		<version>1.4.7</version>
-	</dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.3</version>
+        </dependency>
 
+        <!-- IAIK sunpkcs11-wrapper, to access an HSM -->
+        <dependency>
+            <groupId>org.xipki.iaik</groupId>
+            <artifactId>sunpkcs11-wrapper</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+
+        <!-- Misc -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>2.0.0</version>
+        </dependency>
     </dependencies>
-
 </project>
